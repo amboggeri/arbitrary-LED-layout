@@ -1,0 +1,12 @@
+{
+  "name": "@ledlay/editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure, undoable editing commands over a Project.",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {"@ledlay/core": "workspace:*"}
+}

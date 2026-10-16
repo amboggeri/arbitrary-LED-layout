@@ -1,0 +1,12 @@
+{
+  "name": "@ledlay/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Project model, geometry, color math, fixture generators and patching. No runtime I/O.",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {"zod": "^4.6.7"}
+}

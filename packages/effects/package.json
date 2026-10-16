@@ -1,0 +1,12 @@
+{
+  "name": "@ledlay/effects",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Spatial/temporal effect definitions and the built-in effect library.",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {"@ledlay/core": "workspace:*"}
+}

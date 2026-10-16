@@ -1,0 +1,12 @@
+{
+  "name": "@ledlay/targets",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Controller drivers: frame senders over a pluggable transport, WLED JSON API client, FSEQ and ledmap export.",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {"@ledlay/core": "workspace:*", "@ledlay/engine": "workspace:*", "@ledlay/protocols": "workspace:*"}
+}

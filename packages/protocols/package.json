@@ -1,0 +1,12 @@
+{
+  "name": "@ledlay/protocols",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure encoders for DDP, E1.31 (sACN) and Art-Net packets.",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {}
+}

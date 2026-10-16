@@ -1,0 +1,12 @@
+{
+  "name": "@ledlay/io",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Importers/exporters for point lists (CSV, Marimapper, xLights custom models).",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {"@ledlay/core": "workspace:*"}
+}

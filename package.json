@@ -1,0 +1,36 @@
+{
+  "name": "ledlay",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Design arbitrary 2D/3D LED layouts, program them with spatial effects and timelines, and drive real controllers (WLED, Art-Net, sACN, DDP, FSEQ).",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @ledlay/studio dev",
+    "bridge": "pnpm --filter @ledlay/bridge start",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "pnpm --filter @ledlay/studio test:e2e",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.0.0",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.2",
+    "vitest": "5.0.5"
+  }
+}

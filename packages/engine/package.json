@@ -1,0 +1,12 @@
+{
+  "name": "@ledlay/engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Compiles layouts, renders compositions/timelines into frames, and maps frames to controller byte buffers.",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {"@ledlay/core": "workspace:*", "@ledlay/effects": "workspace:*"}
+}
