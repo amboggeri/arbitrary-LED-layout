@@ -1,6 +1,15 @@
 import { describe, expect, it, vi } from "vitest";
 import { createProject } from "@ledlay/core";
-import { downloadBlob, loadAutosave, modelFormat, readFileAsDataUrl, readFileAsText, safeFileName, saveAutosave, AUTOSAVE_KEY } from "../src/state/persistence";
+import {
+  downloadBlob,
+  loadAutosave,
+  modelFormat,
+  readFileAsDataUrl,
+  readFileAsText,
+  safeFileName,
+  saveAutosave,
+  AUTOSAVE_KEY,
+} from "../src/state/persistence";
 
 describe("persistence", () => {
   it("autosaves and restores", () => {
@@ -14,7 +23,14 @@ describe("persistence", () => {
   });
 
   it("survives storage failures", () => {
-    const bad = { setItem: () => { throw new Error("quota"); }, getItem: () => { throw new Error("x"); } } as unknown as Storage;
+    const bad = {
+      setItem: () => {
+        throw new Error("quota");
+      },
+      getItem: () => {
+        throw new Error("x");
+      },
+    } as unknown as Storage;
     expect(saveAutosave(createProject(), bad)).toBe(false);
     expect(loadAutosave(bad)).toBeNull();
   });

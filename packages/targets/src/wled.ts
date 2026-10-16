@@ -5,7 +5,10 @@
 import { getLedType, type Controller, type Fixture } from "@ledlay/core";
 import type { CompiledController } from "@ledlay/engine";
 
-export type FetchLike = (input: string, init?: { method?: string; headers?: Record<string, string>; body?: unknown }) => Promise<{
+export type FetchLike = (
+  input: string,
+  init?: { method?: string; headers?: Record<string, string>; body?: unknown },
+) => Promise<{
   ok: boolean;
   status: number;
   json(): Promise<unknown>;
@@ -137,7 +140,10 @@ export function buildWledBusConfig(cc: CompiledController, fixtures: readonly Fi
 }
 
 /** Full cfg patch: LED buses plus realtime (DDP/E1.31/Art-Net) receive settings. */
-export function buildWledConfigPatch(cc: CompiledController, fixtures: readonly Fixture[]): Record<string, unknown> {
+export function buildWledConfigPatch(
+  cc: CompiledController,
+  fixtures: readonly Fixture[],
+): Record<string, unknown> {
   const c: Controller = cc.controller;
   // timeout is in 100ms units; "no-gc" disables WLED gamma so ledlay's gamma is authoritative.
   const live: Record<string, unknown> = { en: true, mso: false, timeout: 25, "no-gc": true };

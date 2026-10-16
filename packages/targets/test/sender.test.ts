@@ -35,7 +35,14 @@ describe("FrameSender", () => {
   it("sends Art-Net with sequence starting at 1 and custom port", async () => {
     const t = new MemoryTransport();
     const s = new FrameSender(t);
-    const c = createController({ id: "c", name: "c", host: "h", protocol: "artnet", universeStart: 0, port: 7000 });
+    const c = createController({
+      id: "c",
+      name: "c",
+      host: "h",
+      protocol: "artnet",
+      universeStart: 0,
+      port: 7000,
+    });
     await s.send(c, data.subarray(0, 30));
     const d = decodeArtDmx(t.sent[0]!.data);
     expect(d.universe).toBe(0);

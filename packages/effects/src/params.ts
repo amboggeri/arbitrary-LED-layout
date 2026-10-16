@@ -1,5 +1,12 @@
 /** Effect parameter specifications and resolution of raw project values into typed values. */
-import { compileGradient, parseHex, type Gradient, type GradientStop, type RGB, type Vec3 } from "@ledlay/core";
+import {
+  compileGradient,
+  parseHex,
+  type Gradient,
+  type GradientStop,
+  type RGB,
+  type Vec3,
+} from "@ledlay/core";
 
 interface Base {
   label: string;
@@ -103,7 +110,9 @@ function isVec3(v: unknown): v is Vec3 {
 }
 
 function isStops(v: unknown): v is GradientStop[] {
-  return Array.isArray(v) && v.every((s) => typeof s === "object" && s !== null && "pos" in s && "color" in s);
+  return (
+    Array.isArray(v) && v.every((s) => typeof s === "object" && s !== null && "pos" in s && "color" in s)
+  );
 }
 
 /**
@@ -131,7 +140,10 @@ export function resolveParam(spec: ParamSpec, raw: unknown): unknown {
   }
 }
 
-export function resolveParams<P extends ParamSpecs>(specs: P, raw: Record<string, unknown>): ResolvedParams<P> {
+export function resolveParams<P extends ParamSpecs>(
+  specs: P,
+  raw: Record<string, unknown>,
+): ResolvedParams<P> {
   const out: Record<string, unknown> = {};
   for (const key of Object.keys(specs)) out[key] = resolveParam(specs[key]!, raw[key]);
   return out as ResolvedParams<P>;

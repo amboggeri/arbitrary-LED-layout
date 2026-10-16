@@ -9,8 +9,13 @@ export interface UniverseChunk {
  * Slice `data` into consecutive universes of `channelsPerUniverse` slots starting at
  * `universeStart`. Use 510 for RGB (170 px) or 512 for RGBW (128 px) so pixels never straddle.
  */
-export function splitUniverses(data: Uint8Array, universeStart: number, channelsPerUniverse = 510): UniverseChunk[] {
-  if (channelsPerUniverse < 1 || channelsPerUniverse > 512) throw new RangeError("channelsPerUniverse must be 1..512");
+export function splitUniverses(
+  data: Uint8Array,
+  universeStart: number,
+  channelsPerUniverse = 510,
+): UniverseChunk[] {
+  if (channelsPerUniverse < 1 || channelsPerUniverse > 512)
+    throw new RangeError("channelsPerUniverse must be 1..512");
   const out: UniverseChunk[] = [];
   for (let i = 0, u = universeStart; i < data.length; i += channelsPerUniverse, u++) {
     out.push({ universe: u, data: data.subarray(i, Math.min(data.length, i + channelsPerUniverse)) });

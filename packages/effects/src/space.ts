@@ -41,7 +41,11 @@ export function createPixelSpace(input: PixelSpaceInput): PixelSpace {
     ? Uint32Array.from(input.indexInFixture)
     : Uint32Array.from({ length: count }, (_, i) => i);
   const bounds = boundsOf(xyz);
-  const size: Vec3 = [bounds.max[0] - bounds.min[0], bounds.max[1] - bounds.min[1], bounds.max[2] - bounds.min[2]];
+  const size: Vec3 = [
+    bounds.max[0] - bounds.min[0],
+    bounds.max[1] - bounds.min[1],
+    bounds.max[2] - bounds.min[2],
+  ];
   const center: Vec3 = [
     (bounds.min[0] + bounds.max[0]) / 2,
     (bounds.min[1] + bounds.max[1]) / 2,

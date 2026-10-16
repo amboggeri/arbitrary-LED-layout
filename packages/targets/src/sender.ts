@@ -65,8 +65,15 @@ export class FrameSender {
         return ddpFramePackets(data, { sequence: this.nextSeq(controller.id, 15, 1), channelsPerPixel });
       case "e131": {
         const seq = this.nextSeq(controller.id, 255, 0);
-        return splitUniverses(data, Math.max(1, controller.universeStart), controller.channelsPerUniverse).map((u) =>
-          encodeE131Packet({ universe: u.universe, sequence: seq, cid: this.cid, sourceName: this.sourceName }, u.data),
+        return splitUniverses(
+          data,
+          Math.max(1, controller.universeStart),
+          controller.channelsPerUniverse,
+        ).map((u) =>
+          encodeE131Packet(
+            { universe: u.universe, sequence: seq, cid: this.cid, sourceName: this.sourceName },
+            u.data,
+          ),
         );
       }
       case "artnet": {

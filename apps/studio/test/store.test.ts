@@ -6,7 +6,10 @@ import { createStudioStore, pruneSelection } from "../src/state/store";
 describe("studio store", () => {
   it("applies commands with undo/redo and labels", () => {
     const s = createStudioStore();
-    s.getState().apply((p) => cmd.addFixture(p, { id: "a", name: "A", geometry: { kind: "strip", count: 2, spacing: 1 } }), "Add A");
+    s.getState().apply(
+      (p) => cmd.addFixture(p, { id: "a", name: "A", geometry: { kind: "strip", count: 2, spacing: 1 } }),
+      "Add A",
+    );
     expect(s.getState().project.fixtures).toHaveLength(1);
     expect(s.getState().canUndo).toBe(true);
     expect(s.getState().undoLabel).toBe("Add A");
@@ -31,8 +34,11 @@ describe("studio store", () => {
 
   it("coalesces drags and seals", () => {
     const s = createStudioStore();
-    s.getState().apply((p) => cmd.addFixture(p, { id: "a", name: "A", geometry: { kind: "strip", count: 2, spacing: 1 } }));
-    for (let x = 1; x <= 5; x++) s.getState().apply((p) => cmd.setFixtureTransform(p, "a", { position: [x, 0, 0] }), "Move", "drag");
+    s.getState().apply((p) =>
+      cmd.addFixture(p, { id: "a", name: "A", geometry: { kind: "strip", count: 2, spacing: 1 } }),
+    );
+    for (let x = 1; x <= 5; x++)
+      s.getState().apply((p) => cmd.setFixtureTransform(p, "a", { position: [x, 0, 0] }), "Move", "drag");
     s.getState().seal();
     s.getState().undo();
     expect(s.getState().project.fixtures[0]!.transform.position).toEqual([0, 0, 0]);
@@ -40,7 +46,9 @@ describe("studio store", () => {
 
   it("prunes selection when things are deleted and resets on load", () => {
     const s = createStudioStore();
-    s.getState().apply((p) => cmd.addFixture(p, { id: "a", name: "A", geometry: { kind: "strip", count: 2, spacing: 1 } }));
+    s.getState().apply((p) =>
+      cmd.addFixture(p, { id: "a", name: "A", geometry: { kind: "strip", count: 2, spacing: 1 } }),
+    );
     s.getState().select({ kind: "fixture", ids: ["a"] });
     s.getState().apply((p) => cmd.removeFixtures(p, ["a"]));
     expect(s.getState().selection).toBeNull();
@@ -59,7 +67,15 @@ describe("studio store", () => {
     p = cmd.addLayer(p, { id: "l", effectId: "solid" });
     const t = cmd.addTrack(p);
     const c = cmd.addClip(t.project, t.trackId, { start: 0, duration: 1, layer: { effectId: "solid" } });
-    p = cmd.addModel(c.project, { id: "m", name: "m", format: "glb", uri: "", transform: { position: [0, 0, 0], rotation: [0, 0, 0], scale: [1, 1, 1] }, opacity: 1, visible: true });
+    p = cmd.addModel(c.project, {
+      id: "m",
+      name: "m",
+      format: "glb",
+      uri: "",
+      transform: { position: [0, 0, 0], rotation: [0, 0, 0], scale: [1, 1, 1] },
+      opacity: 1,
+      visible: true,
+    });
     const sel = { kind: "fixture" as const, ids: ["a", "zz"] };
     expect(pruneSelection(sel, p)).toEqual({ kind: "fixture", ids: ["a"] });
     const keep = { kind: "fixture" as const, ids: ["a"] };
@@ -87,6 +103,11 @@ describe("studio store", () => {
     expect(s.getState().layerErrors).toBe(before);
     for (let i = 0; i < 8; i++) s.getState().notify("info", `n${i}`);
     expect(s.getState().notices).toHaveLength(5);
-    expect(s.getState()).toMatchObject({ tool: "draw", bottomTab: "timeline", output: { enabled: false, masterBrightness: 0.5 }, fps: 30 });
+    expect(s.getState()).toMatchObject({
+      tool: "draw",
+      bottomTab: "timeline",
+      output: { enabled: false, masterBrightness: 0.5 },
+      fps: 30,
+    });
   });
 });

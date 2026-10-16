@@ -17,7 +17,13 @@ export function isPrivateHost(host: string): boolean {
   const m = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(h);
   if (!m) return false;
   const [a, b] = [Number(m[1]), Number(m[2])];
-  return a === 10 || a === 127 || (a === 192 && b === 168) || (a === 172 && b >= 16 && b <= 31) || (a === 169 && b === 254);
+  return (
+    a === 10 ||
+    a === 127 ||
+    (a === 192 && b === 168) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 169 && b === 254)
+  );
 }
 
 function str(params: Record<string, unknown>, key: string): string {
@@ -26,7 +32,11 @@ function str(params: Record<string, unknown>, key: string): string {
   return v;
 }
 
-export async function handleRpc(method: RpcMethod, params: Record<string, unknown>, deps: RpcDeps): Promise<unknown> {
+export async function handleRpc(
+  method: RpcMethod,
+  params: Record<string, unknown>,
+  deps: RpcDeps,
+): Promise<unknown> {
   const allowed = deps.isAllowedHost ?? isPrivateHost;
   const wled = () => {
     const host = str(params, "host");
@@ -52,7 +62,8 @@ export async function handleRpc(method: RpcMethod, params: Record<string, unknow
     }
     case "discover": {
       if (!deps.discover) throw new Error("Discovery not available");
-      const t = typeof params.timeoutMs === "number" ? Math.min(10_000, Math.max(100, params.timeoutMs)) : 2500;
+      const t =
+        typeof params.timeoutMs === "number" ? Math.min(10_000, Math.max(100, params.timeoutMs)) : 2500;
       return deps.discover(t);
     }
   }

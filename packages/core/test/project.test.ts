@@ -36,7 +36,9 @@ describe("project parsing", () => {
 
   it("reports readable validation errors", () => {
     try {
-      parseProject({ fixtures: [{ id: "x", name: "bad", geometry: { kind: "strip", count: 0, spacing: 1 } }] });
+      parseProject({
+        fixtures: [{ id: "x", name: "bad", geometry: { kind: "strip", count: 0, spacing: 1 } }],
+      });
       expect.fail("should throw");
     } catch (e) {
       expect(e).toBeInstanceOf(ProjectValidationError);
@@ -60,7 +62,10 @@ describe("project parsing", () => {
 
 describe("factories", () => {
   it("generate ids and defaults", () => {
-    const f = createFixture({ name: "m", geometry: { kind: "matrix", cols: 2, rows: 2, spacingX: 1, spacingY: 1 } });
+    const f = createFixture({
+      name: "m",
+      geometry: { kind: "matrix", cols: 2, rows: 2, spacingX: 1, spacingY: 1 },
+    });
     expect(f.id).toMatch(/^fx_[0-9a-z]{10}$/);
     expect(f.geometry).toMatchObject({ wiring: "serpentine", start: "bottom-left" });
     expect(f.patch).toBeNull();

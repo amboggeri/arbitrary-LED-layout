@@ -18,7 +18,10 @@ export function LayersPanel() {
       {playback === "timeline" && (
         <div className="banner">
           Playback is in <b>timeline</b> mode, so these live layers are not rendered.{" "}
-          <button className="link" onClick={() => apply((p) => cmd.setProjectMeta(p, { playback: "live" }), "Live mode")}>
+          <button
+            className="link"
+            onClick={() => apply((p) => cmd.setProjectMeta(p, { playback: "live" }), "Live mode")}
+          >
             Switch to live
           </button>
         </div>
@@ -31,7 +34,10 @@ export function LayersPanel() {
             const effect = runtime.registry.get(e.target.value);
             if (!effect) return;
             const id = `ly_${Date.now().toString(36)}`;
-            apply((p) => cmd.addLayer(p, { id, name: effect.name, effectId: effect.id }), `Add ${effect.name}`);
+            apply(
+              (p) => cmd.addLayer(p, { id, name: effect.name, effectId: effect.id }),
+              `Add ${effect.name}`,
+            );
             select({ kind: "layer", id });
           }}
         >
@@ -57,7 +63,12 @@ export function LayersPanel() {
                 aria-label={`enable ${l.name || l.effectId}`}
                 checked={l.enabled}
                 onClick={(e) => e.stopPropagation()}
-                onChange={(e) => apply((p) => cmd.updateLayer(p, { layerId: l.id }, { enabled: e.target.checked }), "Toggle layer")}
+                onChange={(e) =>
+                  apply(
+                    (p) => cmd.updateLayer(p, { layerId: l.id }, { enabled: e.target.checked }),
+                    "Toggle layer",
+                  )
+                }
               />
               <span className="name">{l.name || runtime.registry.get(l.effectId)?.name || l.effectId}</span>
               <span className="meta">
@@ -68,10 +79,26 @@ export function LayersPanel() {
                   ⚠
                 </span>
               )}
-              <button className="ghost" aria-label="move up" disabled={idx === layers.length - 1} onClick={(e) => (e.stopPropagation(), apply((p) => cmd.moveLayer(p, l.id, idx + 1), "Reorder layer"))}>
+              <button
+                className="ghost"
+                aria-label="move up"
+                disabled={idx === layers.length - 1}
+                onClick={(e) => (
+                  e.stopPropagation(),
+                  apply((p) => cmd.moveLayer(p, l.id, idx + 1), "Reorder layer")
+                )}
+              >
                 ▲
               </button>
-              <button className="ghost" aria-label="move down" disabled={idx === 0} onClick={(e) => (e.stopPropagation(), apply((p) => cmd.moveLayer(p, l.id, idx - 1), "Reorder layer"))}>
+              <button
+                className="ghost"
+                aria-label="move down"
+                disabled={idx === 0}
+                onClick={(e) => (
+                  e.stopPropagation(),
+                  apply((p) => cmd.moveLayer(p, l.id, idx - 1), "Reorder layer")
+                )}
+              >
                 ▼
               </button>
             </li>

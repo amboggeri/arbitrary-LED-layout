@@ -31,7 +31,15 @@ export const gradient = defineEffect({
     },
     axis: { type: "select", label: "Axis", default: "y", options: AXIS_OPTIONS },
     repeat: { type: "number", label: "Repeat", default: 1, min: 0.1, max: 20, step: 0.1 },
-    speed: { type: "number", label: "Scroll speed", default: 0, min: -5, max: 5, step: 0.01, unit: "cycles/s" },
+    speed: {
+      type: "number",
+      label: "Scroll speed",
+      default: 0,
+      min: -5,
+      max: 5,
+      step: 0.01,
+      unit: "cycles/s",
+    },
     mirror: { type: "boolean", label: "Mirror", default: false },
   },
   render({ params, space, time }, out) {
@@ -69,7 +77,15 @@ export const twinkle = defineEffect({
     color: { type: "color", label: "Color", default: "#fff2d0" },
     randomHue: { type: "boolean", label: "Random hue", default: false },
     density: { type: "number", label: "Density", default: 0.15, min: 0, max: 1, step: 0.01 },
-    period: { type: "number", label: "Twinkle time", default: 1.2, min: 0.05, max: 10, step: 0.05, unit: "s" },
+    period: {
+      type: "number",
+      label: "Twinkle time",
+      default: 1.2,
+      min: 0.05,
+      max: 10,
+      step: 0.05,
+      unit: "s",
+    },
     seed: { type: "number", label: "Seed", default: 1, min: 0, max: 9999, step: 1 },
   },
   render({ params, space, time }, out) {

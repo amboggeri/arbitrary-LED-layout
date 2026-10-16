@@ -68,7 +68,8 @@ function encodeVarHeaders(vhs: FseqVariableHeader[]): Uint8Array {
 export class FseqWriter {
   private frames: Uint8Array[] = [];
   constructor(private readonly opts: FseqWriteOptions) {
-    if (opts.stepTimeMs < 1 || opts.stepTimeMs > 255) throw new RangeError("FSEQ step time must be 1..255 ms");
+    if (opts.stepTimeMs < 1 || opts.stepTimeMs > 255)
+      throw new RangeError("FSEQ step time must be 1..255 ms");
   }
 
   addFrame(data: Uint8Array): void {

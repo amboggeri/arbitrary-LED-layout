@@ -4,7 +4,13 @@
  */
 import type { Controller } from "@ledlay/core";
 import { encodeFrameMessage } from "./frames";
-import { LINK_VERSION, type BridgeStats, type ClientMessageInput, type RpcMethod, type ServerMessage } from "./messages";
+import {
+  LINK_VERSION,
+  type BridgeStats,
+  type ClientMessageInput,
+  type RpcMethod,
+  type ServerMessage,
+} from "./messages";
 
 /** Minimal WebSocket surface we rely on (DOM WebSocket and `ws` both satisfy it). */
 export interface SocketLike {
@@ -40,7 +46,10 @@ export class BridgeClient {
   private socket: SocketLike | null = null;
   private status: LinkStatus = "closed";
   private nextRpc = 1;
-  private pending = new Map<number, { resolve: (v: unknown) => void; reject: (e: Error) => void; timer: ReturnType<typeof setTimeout> }>();
+  private pending = new Map<
+    number,
+    { resolve: (v: unknown) => void; reject: (e: Error) => void; timer: ReturnType<typeof setTimeout> }
+  >();
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private controllers: Controller[] = [];
   private stopped = true;
@@ -83,7 +92,9 @@ export class BridgeClient {
 
   private open() {
     const factory =
-      this.opts.socketFactory ?? ((url: string) => new (globalThis as unknown as { WebSocket: new (u: string) => SocketLike }).WebSocket(url));
+      this.opts.socketFactory ??
+      ((url: string) =>
+        new (globalThis as unknown as { WebSocket: new (u: string) => SocketLike }).WebSocket(url));
     this.setStatus("connecting");
     let sock: SocketLike;
     try {

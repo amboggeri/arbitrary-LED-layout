@@ -27,7 +27,9 @@ describe("handleRpc", () => {
 
   it("applies config and optionally reboots", async () => {
     calls.length = 0;
-    expect(await handleRpc("wled.applyConfig", { host: "10.0.0.2", config: { a: 1 }, reboot: true }, { fetch })).toEqual({
+    expect(
+      await handleRpc("wled.applyConfig", { host: "10.0.0.2", config: { a: 1 }, reboot: true }, { fetch }),
+    ).toEqual({
       applied: true,
       rebooting: true,
     });
@@ -39,7 +41,13 @@ describe("handleRpc", () => {
     calls.length = 0;
     await handleRpc("wled.state", { host: "10.0.0.2", state: { on: false } }, { fetch });
     await handleRpc("wled.state", { host: "10.0.0.2" }, { fetch });
-    expect(await handleRpc("wled.uploadFile", { host: "10.0.0.2", path: "/ledmap.json", content: "{}" }, { fetch })).toEqual({
+    expect(
+      await handleRpc(
+        "wled.uploadFile",
+        { host: "10.0.0.2", path: "/ledmap.json", content: "{}" },
+        { fetch },
+      ),
+    ).toEqual({
       uploaded: true,
     });
     expect(calls[0]!.body).toBe('{"on":false}');
@@ -47,7 +55,9 @@ describe("handleRpc", () => {
   });
 
   it("respects a custom host policy and missing discovery", async () => {
-    await expect(handleRpc("wled.info", { host: "10.0.0.2" }, { fetch, isAllowedHost: () => false })).rejects.toThrow(/refusing/);
+    await expect(
+      handleRpc("wled.info", { host: "10.0.0.2" }, { fetch, isAllowedHost: () => false }),
+    ).rejects.toThrow(/refusing/);
     await expect(handleRpc("discover", {}, {})).rejects.toThrow(/not available/);
     let seen = 0;
     await handleRpc("discover", { timeoutMs: 1e9 }, { discover: async (t) => ((seen = t), []) });

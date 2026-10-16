@@ -11,11 +11,32 @@ function tl(loop = true): Timeline {
         id: "t0",
         clips: [
           { id: "b", start: 5, duration: 5, layer: createLayer({ id: "lb", effectId: "solid" }) },
-          { id: "a", start: 0, duration: 6, fadeIn: 2, fadeOut: 2, layer: createLayer({ id: "la", effectId: "solid" }) },
+          {
+            id: "a",
+            start: 0,
+            duration: 6,
+            fadeIn: 2,
+            fadeOut: 2,
+            layer: createLayer({ id: "la", effectId: "solid" }),
+          },
         ],
       },
-      { id: "t1", muted: true, clips: [{ id: "m", start: 0, duration: 10, layer: createLayer({ effectId: "solid" }) }] },
-      { id: "t2", clips: [{ id: "c", start: 1, duration: 2, layer: createLayer({ id: "lc", effectId: "solid", opacity: 0.5 }) }] },
+      {
+        id: "t1",
+        muted: true,
+        clips: [{ id: "m", start: 0, duration: 10, layer: createLayer({ effectId: "solid" }) }],
+      },
+      {
+        id: "t2",
+        clips: [
+          {
+            id: "c",
+            start: 1,
+            duration: 2,
+            layer: createLayer({ id: "lc", effectId: "solid", opacity: 0.5 }),
+          },
+        ],
+      },
     ],
   });
 }

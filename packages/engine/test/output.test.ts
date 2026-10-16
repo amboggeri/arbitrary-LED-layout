@@ -52,9 +52,13 @@ describe("ControllerEncoder", () => {
 
   it("estimates current and limits power", () => {
     // 8 px * 3 ch * 20mA = 0.48A at full white
-    const unl = new ControllerEncoder(compileLayout(twoStrips()).controllers[0]!).encode(frameOf(8, [1, 1, 1]));
+    const unl = new ControllerEncoder(compileLayout(twoStrips()).controllers[0]!).encode(
+      frameOf(8, [1, 1, 1]),
+    );
     expect(unl.estimatedAmps).toBeCloseTo(0.48);
-    const lim = new ControllerEncoder(compileLayout(twoStrips({ maxAmps: 0.24 })).controllers[0]!).encode(frameOf(8, [1, 1, 1]));
+    const lim = new ControllerEncoder(compileLayout(twoStrips({ maxAmps: 0.24 })).controllers[0]!).encode(
+      frameOf(8, [1, 1, 1]),
+    );
     expect(lim.powerScale).toBeCloseTo(0.5);
     expect(lim.data[0]).toBe(127);
   });

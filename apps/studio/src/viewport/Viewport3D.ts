@@ -100,7 +100,14 @@ export class Viewport3D implements FrameSink {
     const dot = makeDotTexture();
     this.leds = new THREE.Points(
       this.ledGeom,
-      new THREE.PointsMaterial({ size: 10, vertexColors: true, map: dot, transparent: true, alphaTest: 0.05, depthWrite: false }),
+      new THREE.PointsMaterial({
+        size: 10,
+        vertexColors: true,
+        map: dot,
+        transparent: true,
+        alphaTest: 0.05,
+        depthWrite: false,
+      }),
     );
     this.glow = new THREE.Points(
       this.ledGeom,
@@ -118,7 +125,10 @@ export class Viewport3D implements FrameSink {
     this.glow.renderOrder = 3;
     this.scene.add(this.modelsGroup, this.wires, this.selectionGroup, this.leds, this.glow);
 
-    this.drawPreview = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xffd23d }));
+    this.drawPreview = new THREE.Line(
+      new THREE.BufferGeometry(),
+      new THREE.LineBasicMaterial({ color: 0xffd23d }),
+    );
     this.scene.add(this.drawPreview);
 
     this.gizmo = new TransformControls(this.camera, this.renderer.domElement);
@@ -282,7 +292,10 @@ export class Viewport3D implements FrameSink {
       if (pts.length > 1) this.wires.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
       if (pts.length > 0) {
         // Data-in marker
-        const m = new THREE.Mesh(new THREE.SphereGeometry(this.ledSize * 0.6, 8, 6), new THREE.MeshBasicMaterial({ color: 0x3dc8ff }));
+        const m = new THREE.Mesh(
+          new THREE.SphereGeometry(this.ledSize * 0.6, 8, 6),
+          new THREE.MeshBasicMaterial({ color: 0x3dc8ff }),
+        );
         m.position.copy(pts[0]!);
         this.wires.add(m);
       }
@@ -297,7 +310,8 @@ export class Viewport3D implements FrameSink {
       const idx = this.layout.fixtureIndex.get(id);
       if (idx === undefined) continue;
       const pts = this.fixtureLine(idx);
-      if (pts.length > 1) this.selectionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
+      if (pts.length > 1)
+        this.selectionGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
       const box = new THREE.Box3().setFromPoints(pts);
       const helper = new THREE.Box3Helper(box.expandByScalar(this.ledSize), 0xffd23d);
       this.selectionGroup.add(helper);
@@ -317,7 +331,12 @@ export class Viewport3D implements FrameSink {
     this.gizmoFixture = f.id;
     if (!this.gizmo.dragging) {
       this.gizmoProxy.position.set(...f.transform.position);
-      this.gizmoProxy.rotation.set(f.transform.rotation[0] / DEG, f.transform.rotation[1] / DEG, f.transform.rotation[2] / DEG, "XYZ");
+      this.gizmoProxy.rotation.set(
+        f.transform.rotation[0] / DEG,
+        f.transform.rotation[1] / DEG,
+        f.transform.rotation[2] / DEG,
+        "XYZ",
+      );
       this.gizmoProxy.scale.set(...f.transform.scale);
     }
     this.gizmo.attach(this.gizmoProxy);
@@ -370,7 +389,12 @@ export class Viewport3D implements FrameSink {
 
   private applyModelProps(obj: THREE.Object3D, m: SceneModel) {
     obj.position.set(...m.transform.position);
-    obj.rotation.set(m.transform.rotation[0] / DEG, m.transform.rotation[1] / DEG, m.transform.rotation[2] / DEG, "XYZ");
+    obj.rotation.set(
+      m.transform.rotation[0] / DEG,
+      m.transform.rotation[1] / DEG,
+      m.transform.rotation[2] / DEG,
+      "XYZ",
+    );
     obj.scale.set(...m.transform.scale);
     obj.visible = m.visible;
     obj.userData.modelId = m.id;
@@ -389,7 +413,10 @@ export class Viewport3D implements FrameSink {
 
   private ndc(ev: PointerEvent): THREE.Vector2 {
     const r = this.renderer.domElement.getBoundingClientRect();
-    return new THREE.Vector2(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+    return new THREE.Vector2(
+      ((ev.clientX - r.left) / r.width) * 2 - 1,
+      -((ev.clientY - r.top) / r.height) * 2 + 1,
+    );
   }
 
   private onPointerDown = (ev: PointerEvent) => {

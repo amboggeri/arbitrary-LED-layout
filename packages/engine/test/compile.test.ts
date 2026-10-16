@@ -26,7 +26,12 @@ describe("compileLayout", () => {
         { pixelCount: 0, colorOrder: "GRBW" },
       ],
     });
-    const a = createFixture({ id: "a", name: "A", geometry: { kind: "strip", count: 3, spacing: 1 }, reversed: true });
+    const a = createFixture({
+      id: "a",
+      name: "A",
+      geometry: { kind: "strip", count: 3, spacing: 1 },
+      reversed: true,
+    });
     a.patch = { controllerId: "c", output: 0, startPixel: 2 };
     const b = createFixture({ id: "b", name: "B", geometry: { kind: "strip", count: 2, spacing: 1 } });
     b.patch = { controllerId: "c", output: 1, startPixel: 0 };

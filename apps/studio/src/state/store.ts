@@ -135,7 +135,13 @@ export function createStudioStore(initial: Project = createProject()) {
     },
     loadProject(p) {
       history.reset(p);
-      set({ project: p, selection: null, time: 0, documentVersion: get().documentVersion + 1, ...syncHistory() });
+      set({
+        project: p,
+        selection: null,
+        time: 0,
+        documentVersion: get().documentVersion + 1,
+        ...syncHistory(),
+      });
     },
     select: (selection) => set({ selection }),
     setTool: (tool) => set({ tool }),

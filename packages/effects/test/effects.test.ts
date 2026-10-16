@@ -41,7 +41,15 @@ describe("param resolution", () => {
     n: { type: "number", label: "n", default: 1, min: 0, max: 2 },
     c: { type: "color", label: "c", default: "#ff0000" },
     b: { type: "boolean", label: "b", default: true },
-    s: { type: "select", label: "s", default: "a", options: [{ value: "a", label: "A" }, { value: "b", label: "B" }] },
+    s: {
+      type: "select",
+      label: "s",
+      default: "a",
+      options: [
+        { value: "a", label: "A" },
+        { value: "b", label: "B" },
+      ],
+    },
     v: { type: "vec3", label: "v", default: [1, 2, 3] },
     g: { type: "gradient", label: "g", default: [{ pos: 0, color: "#000000" }] },
     k: { type: "code", label: "k", default: "return 1" },
@@ -86,7 +94,11 @@ describe("registry", () => {
 
 describe("specific effects", () => {
   it("solid fills", () => {
-    expect(px(renderOnce(solid, lineSpace(3), 0, { color: "#ff0080" }), 2)).toEqual([1, 0, Math.fround(128 / 255)]);
+    expect(px(renderOnce(solid, lineSpace(3), 0, { color: "#ff0080" }), 2)).toEqual([
+      1,
+      0,
+      Math.fround(128 / 255),
+    ]);
   });
 
   it("gradient follows the chosen axis", () => {
@@ -189,5 +201,14 @@ describe("script effect", () => {
 
   it("caches compiled scripts", () => {
     expect(compileScript("return 1")).toBe(compileScript("return 1"));
+  });
+});
+
+describe("script helper library", () => {
+  it("exposes helpers to scripts", () => {
+    const code =
+      "return [clamp(2), mix(0, 1, 0.5), fract(1.25) + 0 * (noise(x) + fbm(x, y, z, 2) + hash(i) + smoothstep(0, 1, 0.5) + triangle(0.5) + abs(-1) + min(1, 2) + max(1, 2) + pow(2, 2) + sqrt(4) + floor(1.5) + ceil(1.5) + atan2(1, 1) + sin(PI) + cos(TAU) + tan(0)) + rgb(0, 0, 0)[0]];";
+    const out = renderOnce(script, lineSpace(1), 0, { code });
+    expect(px(out, 0)).toEqual([1, 0.5, 0.25]);
   });
 });

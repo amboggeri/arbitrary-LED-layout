@@ -138,7 +138,10 @@ export const controllerSchema = z.object({
   universeStart: z.number().int().min(0).max(32767).default(1),
   /** Channels used per universe (510 keeps RGB pixels from straddling universes). */
   channelsPerUniverse: z.number().int().min(3).max(512).default(510),
-  outputs: z.array(controllerOutputSchema).min(1).default([{ pin: null, pixelCount: 0, colorOrder: "RGB" }]),
+  outputs: z
+    .array(controllerOutputSchema)
+    .min(1)
+    .default([{ pin: null, pixelCount: 0, colorOrder: "RGB" }]),
   /** Gamma applied before sending. WLED applies its own gamma, so 1.0 is the default. */
   gamma: z.number().min(0.1).max(5).default(1),
   /** Master brightness 0..1 for this controller. */

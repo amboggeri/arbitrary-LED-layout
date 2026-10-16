@@ -5,13 +5,28 @@ describe("Art-Net", () => {
   it("encodes the ArtDmx header exactly", () => {
     const pkt = encodeArtDmx({ universe: 0x0123, sequence: 5 }, new Uint8Array([10, 20, 30, 40]));
     expect([...pkt]).toEqual([
-      0x41, 0x72, 0x74, 0x2d, 0x4e, 0x65, 0x74, 0x00, // "Art-Net\0"
-      0x00, 0x50, // OpDmx LE
-      0x00, 0x0e, // ProtVer 14
-      5, 0, // sequence, physical
-      0x23, 0x01, // SubUni, Net
-      0x00, 0x04, // length
-      10, 20, 30, 40,
+      0x41,
+      0x72,
+      0x74,
+      0x2d,
+      0x4e,
+      0x65,
+      0x74,
+      0x00, // "Art-Net\0"
+      0x00,
+      0x50, // OpDmx LE
+      0x00,
+      0x0e, // ProtVer 14
+      5,
+      0, // sequence, physical
+      0x23,
+      0x01, // SubUni, Net
+      0x00,
+      0x04, // length
+      10,
+      20,
+      30,
+      40,
     ]);
   });
 

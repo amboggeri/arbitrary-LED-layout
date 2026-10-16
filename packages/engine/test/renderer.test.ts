@@ -38,7 +38,9 @@ describe("Renderer", () => {
     expect([...r.maskFor({ fixtureIds: ["a"], tags: [], invert: true })!]).toEqual([0, 0, 0, 0, 1, 1, 1, 1]);
     expect([...r.maskFor({ fixtureIds: [], tags: [], invert: true })!]).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
     expect(r.maskFor(null)).toBeNull();
-    expect(r.maskFor({ fixtureIds: ["a"], tags: [], invert: false })).toBe(r.maskFor({ fixtureIds: ["a"], tags: [], invert: false }));
+    expect(r.maskFor({ fixtureIds: ["a"], tags: [], invert: false })).toBe(
+      r.maskFor({ fixtureIds: ["a"], tags: [], invert: false }),
+    );
   });
 
   it("skips disabled layers and reports unknown effects", () => {
@@ -110,7 +112,19 @@ describe("Renderer", () => {
     p.playback = "timeline";
     p.timeline = timelineSchema.parse({
       duration: 4,
-      tracks: [{ id: "t", clips: [{ id: "c", start: 1, duration: 2, layer: createLayer({ effectId: "solid", params: { color: "#00ff00" } }) }] }],
+      tracks: [
+        {
+          id: "t",
+          clips: [
+            {
+              id: "c",
+              start: 1,
+              duration: 2,
+              layer: createLayer({ effectId: "solid", params: { color: "#00ff00" } }),
+            },
+          ],
+        },
+      ],
     });
     const r = new Renderer(registry, compileLayout(p));
     expect(r.renderProject(p, 0.5).every((v) => v === 0)).toBe(true);

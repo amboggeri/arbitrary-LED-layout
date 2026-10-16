@@ -1,5 +1,14 @@
 /** Ready-made fixture and project templates for quick starts and demos. */
-import { createController, createFixture, createLayer, createProject, ledCount, type Fixture, type Project, type Vec3 } from "@ledlay/core";
+import {
+  createController,
+  createFixture,
+  createLayer,
+  createProject,
+  ledCount,
+  type Fixture,
+  type Project,
+  type Vec3,
+} from "@ledlay/core";
 
 export type FixtureTemplateId = "strip" | "ring" | "matrix" | "cube" | "polyline" | "helix";
 
@@ -9,7 +18,11 @@ export interface FixtureTemplate {
   make(at?: Vec3): Fixture;
 }
 
-const at3 = (p?: Vec3) => ({ position: p ?? ([0, 0, 0] as Vec3), rotation: [0, 0, 0] as Vec3, scale: [1, 1, 1] as Vec3 });
+const at3 = (p?: Vec3) => ({
+  position: p ?? ([0, 0, 0] as Vec3),
+  rotation: [0, 0, 0] as Vec3,
+  scale: [1, 1, 1] as Vec3,
+});
 
 /** Helix polyline points — handy for "tree" wraps. */
 export function helixPoints(turns: number, radius: number, height: number, segmentsPerTurn = 24): Vec3[] {
@@ -26,12 +39,18 @@ export const FIXTURE_TEMPLATES: readonly FixtureTemplate[] = [
   {
     id: "strip",
     label: "Strip (60 LEDs/m, 1 m)",
-    make: (p) => createFixture({ name: "Strip", geometry: { kind: "strip", count: 60, spacing: 16.667 }, transform: at3(p) }),
+    make: (p) =>
+      createFixture({
+        name: "Strip",
+        geometry: { kind: "strip", count: 60, spacing: 16.667 },
+        transform: at3(p),
+      }),
   },
   {
     id: "ring",
     label: "Ring (24 LEDs)",
-    make: (p) => createFixture({ name: "Ring", geometry: { kind: "ring", count: 24, radius: 80 }, transform: at3(p) }),
+    make: (p) =>
+      createFixture({ name: "Ring", geometry: { kind: "ring", count: 24, radius: 80 }, transform: at3(p) }),
   },
   {
     id: "matrix",
@@ -46,7 +65,12 @@ export const FIXTURE_TEMPLATES: readonly FixtureTemplate[] = [
   {
     id: "cube",
     label: "Cube 8×8×8",
-    make: (p) => createFixture({ name: "Cube", geometry: { kind: "cube", nx: 8, ny: 8, nz: 8, spacing: 30 }, transform: at3(p) }),
+    make: (p) =>
+      createFixture({
+        name: "Cube",
+        geometry: { kind: "cube", nx: 8, ny: 8, nz: 8, spacing: 30 },
+        transform: at3(p),
+      }),
   },
   {
     id: "polyline",
@@ -111,7 +135,12 @@ export function demoProject(): Project {
     controllers: [ctl],
     layers: [
       createLayer({ name: "Base", effectId: "spiral", params: {} }),
-      createLayer({ name: "Star", effectId: "twinkle", params: { density: 0.5 }, mask: { fixtureIds: [], tags: ["star"], invert: false } }),
+      createLayer({
+        name: "Star",
+        effectId: "twinkle",
+        params: { density: 0.5 },
+        mask: { fixtureIds: [], tags: ["star"], invert: false },
+      }),
       createLayer({
         name: "Orb",
         effectId: "orb",

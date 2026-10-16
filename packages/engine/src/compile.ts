@@ -87,5 +87,8 @@ export function compileLayout(project: Project): CompiledLayout {
 
 /** Channel count for a compiled controller's byte buffer. */
 export function controllerChannelCount(c: CompiledController): number {
-  return c.layout.outputs.reduce((n, o) => n + o.length * channelsFor(c.controller.outputs[o.output]!.colorOrder), 0);
+  return c.layout.outputs.reduce(
+    (n, o) => n + o.length * channelsFor(c.controller.outputs[o.output]!.colorOrder),
+    0,
+  );
 }

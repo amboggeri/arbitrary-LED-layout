@@ -22,10 +22,22 @@ import * as cmd from "@ledlay/editor";
 import { buildLedmap2D, buildWledConfigPatch, serializeLedmap, type WledInfo } from "@ledlay/targets";
 import { useRuntime } from "../runtime/context";
 import { studio, useStudio } from "../state/store";
-import { Checkbox, Field, NumberInput, Section, Select, Slider, TagsInput, TextInput, Vec3Input, opts } from "./controls";
+import {
+  Checkbox,
+  Field,
+  NumberInput,
+  Section,
+  Select,
+  Slider,
+  TagsInput,
+  TextInput,
+  Vec3Input,
+  opts,
+} from "./controls";
 import { ParamEditor, type LayerLocator } from "./ParamEditor";
 
-const apply = (...a: Parameters<ReturnType<typeof studio.getState>["apply"]>) => studio.getState().apply(...a);
+const apply = (...a: Parameters<ReturnType<typeof studio.getState>["apply"]>) =>
+  studio.getState().apply(...a);
 
 export function Inspector() {
   const selection = useStudio((s) => s.selection);
@@ -34,7 +46,12 @@ export function Inspector() {
   if (!selection) body = <ProjectInspector />;
   else if (selection.kind === "fixture") {
     const fixtures = project.fixtures.filter((f) => selection.ids.includes(f.id));
-    body = fixtures.length === 1 ? <FixtureInspector fixture={fixtures[0]!} /> : <MultiFixtureInspector fixtures={fixtures} />;
+    body =
+      fixtures.length === 1 ? (
+        <FixtureInspector fixture={fixtures[0]!} />
+      ) : (
+        <MultiFixtureInspector fixtures={fixtures} />
+      );
   } else if (selection.kind === "controller") {
     const c = project.controllers.find((x) => x.id === selection.id);
     body = c ? <ControllerInspector controller={c} /> : null;
@@ -60,13 +77,29 @@ function ProjectInspector() {
   return (
     <Section title="Project">
       <Field label="Name">
-        <TextInput ariaLabel="project name" value={p.name} onChange={(name) => apply((x) => cmd.setProjectMeta(x, { name }), "Rename project")} />
+        <TextInput
+          ariaLabel="project name"
+          value={p.name}
+          onChange={(name) => apply((x) => cmd.setProjectMeta(x, { name }), "Rename project")}
+        />
       </Field>
       <Field label="Units">
-        <Select ariaLabel="units" value={p.units} options={opts(UNITS)} onChange={(units) => apply((x) => cmd.setProjectMeta(x, { units }), "Units")} />
+        <Select
+          ariaLabel="units"
+          value={p.units}
+          options={opts(UNITS)}
+          onChange={(units) => apply((x) => cmd.setProjectMeta(x, { units }), "Units")}
+        />
       </Field>
       <Field label="Frame rate">
-        <NumberInput ariaLabel="fps" value={p.fps} min={1} max={240} integer onChange={(fps) => apply((x) => cmd.setProjectMeta(x, { fps }), "FPS")} />
+        <NumberInput
+          ariaLabel="fps"
+          value={p.fps}
+          min={1}
+          max={240}
+          integer
+          onChange={(fps) => apply((x) => cmd.setProjectMeta(x, { fps }), "FPS")}
+        />
       </Field>
       <Field label="Playback">
         <Select
@@ -76,7 +109,9 @@ function ProjectInspector() {
           onChange={(playback) => apply((x) => cmd.setProjectMeta(x, { playback }), "Playback mode")}
         />
       </Field>
-      <p className="muted">Select a fixture, controller, layer or clip to edit it. Shift-click LEDs to multi-select.</p>
+      <p className="muted">
+        Select a fixture, controller, layer or clip to edit it. Shift-click LEDs to multi-select.
+      </p>
     </Section>
   );
 }
@@ -86,11 +121,20 @@ function ProjectInspector() {
 function GeometryFields({ fixture }: { fixture: Fixture }) {
   const g = fixture.geometry;
   const set = (patch: Partial<FixtureGeometry>, live = false) => {
-    apply((p) => cmd.updateFixture(p, fixture.id, { geometry: { ...g, ...patch } as FixtureGeometry }), "Edit geometry", live ? `geom:${fixture.id}` : undefined);
+    apply(
+      (p) => cmd.updateFixture(p, fixture.id, { geometry: { ...g, ...patch } as FixtureGeometry }),
+      "Edit geometry",
+      live ? `geom:${fixture.id}` : undefined,
+    );
   };
   const num = (label: string, key: string, props: { min?: number; max?: number; integer?: boolean } = {}) => (
     <Field label={label}>
-      <NumberInput ariaLabel={label} value={(g as unknown as Record<string, number>)[key]!} {...props} onChange={(v) => set({ [key]: v } as Partial<FixtureGeometry>)} />
+      <NumberInput
+        ariaLabel={label}
+        value={(g as unknown as Record<string, number>)[key]!}
+        {...props}
+        onChange={(v) => set({ [key]: v } as Partial<FixtureGeometry>)}
+      />
     </Field>
   );
   switch (g.kind) {
@@ -118,12 +162,26 @@ function GeometryFields({ fixture }: { fixture: Fixture }) {
           {num("Spacing X", "spacingX", { min: 0.001 })}
           {num("Spacing Y", "spacingY", { min: 0.001 })}
           <Field label="Wiring">
-            <Select ariaLabel="wiring" value={g.wiring} options={opts(WIRING_PATTERNS)} onChange={(wiring) => set({ wiring })} />
+            <Select
+              ariaLabel="wiring"
+              value={g.wiring}
+              options={opts(WIRING_PATTERNS)}
+              onChange={(wiring) => set({ wiring })}
+            />
           </Field>
           <Field label="Start corner">
-            <Select ariaLabel="start corner" value={g.start} options={opts(START_CORNERS)} onChange={(start) => set({ start })} />
+            <Select
+              ariaLabel="start corner"
+              value={g.start}
+              options={opts(START_CORNERS)}
+              onChange={(start) => set({ start })}
+            />
           </Field>
-          <Checkbox label="Columns first (vertical)" checked={g.vertical} onChange={(vertical) => set({ vertical })} />
+          <Checkbox
+            label="Columns first (vertical)"
+            checked={g.vertical}
+            onChange={(vertical) => set({ vertical })}
+          />
         </>
       );
     case "cube":
@@ -134,7 +192,12 @@ function GeometryFields({ fixture }: { fixture: Fixture }) {
           {num("Z count", "nz", { min: 1, integer: true })}
           {num("Spacing", "spacing", { min: 0.001 })}
           <Field label="Wiring">
-            <Select ariaLabel="wiring" value={g.wiring} options={opts(WIRING_PATTERNS)} onChange={(wiring) => set({ wiring })} />
+            <Select
+              ariaLabel="wiring"
+              value={g.wiring}
+              options={opts(WIRING_PATTERNS)}
+              onChange={(wiring) => set({ wiring })}
+            />
           </Field>
         </>
       );
@@ -144,11 +207,13 @@ function GeometryFields({ fixture }: { fixture: Fixture }) {
           {num("Spacing", "spacing", { min: 0.001 })}
           <Checkbox label="Closed loop" checked={g.closed} onChange={(closed) => set({ closed })} />
           <Field label="Vertices">
-            <span className="muted">
-              {g.points.length} — use the Draw tool (D) to add points
-            </span>
+            <span className="muted">{g.points.length} — use the Draw tool (D) to add points</span>
           </Field>
-          <button className="ghost" disabled={g.points.length <= 2} onClick={() => set({ points: g.points.slice(0, -1) })}>
+          <button
+            className="ghost"
+            disabled={g.points.length <= 2}
+            onClick={() => set({ points: g.points.slice(0, -1) })}
+          >
             Remove last vertex
           </button>
         </>
@@ -173,8 +238,13 @@ function PatchFields({ fixture }: { fixture: Fixture }) {
         <Select
           ariaLabel="patch controller"
           value={patch?.controllerId ?? ""}
-          options={[{ value: "", label: "— not patched —" }, ...controllers.map((c) => ({ value: c.id, label: c.name }))]}
-          onChange={(id) => setPatch(id ? { controllerId: id, output: 0, startPixel: patch?.startPixel ?? 0 } : null)}
+          options={[
+            { value: "", label: "— not patched —" },
+            ...controllers.map((c) => ({ value: c.id, label: c.name })),
+          ]}
+          onChange={(id) =>
+            setPatch(id ? { controllerId: id, output: 0, startPixel: patch?.startPixel ?? 0 } : null)
+          }
         />
       </Field>
       {patch && ctl && (
@@ -188,7 +258,13 @@ function PatchFields({ fixture }: { fixture: Fixture }) {
             />
           </Field>
           <Field label="Start pixel">
-            <NumberInput ariaLabel="start pixel" value={patch.startPixel} min={0} integer onChange={(startPixel) => setPatch({ ...patch, startPixel })} />
+            <NumberInput
+              ariaLabel="start pixel"
+              value={patch.startPixel}
+              min={0}
+              integer
+              onChange={(startPixel) => setPatch({ ...patch, startPixel })}
+            />
           </Field>
         </>
       )}
@@ -198,8 +274,10 @@ function PatchFields({ fixture }: { fixture: Fixture }) {
 
 function FixtureInspector({ fixture }: { fixture: Fixture }) {
   const f = fixture;
-  const set = (changes: Partial<Fixture>, label = "Edit fixture") => apply((p) => cmd.updateFixture(p, f.id, changes), label);
-  const setT = (t: Partial<Fixture["transform"]>) => apply((p) => cmd.setFixtureTransform(p, f.id, t), "Transform fixture");
+  const set = (changes: Partial<Fixture>, label = "Edit fixture") =>
+    apply((p) => cmd.updateFixture(p, f.id, changes), label);
+  const setT = (t: Partial<Fixture["transform"]>) =>
+    apply((p) => cmd.setFixtureTransform(p, f.id, t), "Transform fixture");
   return (
     <>
       <Section
@@ -217,35 +295,60 @@ function FixtureInspector({ fixture }: { fixture: Fixture }) {
             >
               ⧉
             </button>
-            <button className="ghost danger" title="Delete" onClick={() => apply((p) => cmd.removeFixtures(p, [f.id]), "Delete fixture")}>
+            <button
+              className="ghost danger"
+              title="Delete"
+              onClick={() => apply((p) => cmd.removeFixtures(p, [f.id]), "Delete fixture")}
+            >
               🗑
             </button>
           </>
         }
       >
         <Field label="Name">
-          <TextInput ariaLabel="fixture name" value={f.name} onChange={(name) => set({ name }, "Rename fixture")} />
+          <TextInput
+            ariaLabel="fixture name"
+            value={f.name}
+            onChange={(name) => set({ name }, "Rename fixture")}
+          />
         </Field>
         <Field label="LEDs">
           <span data-testid="fixture-led-count">{ledCount(f.geometry)}</span>
         </Field>
         <Field label="LED type">
-          <Select ariaLabel="led type" value={f.ledTypeId} options={LED_TYPES.map((t) => ({ value: t.id, label: t.name }))} onChange={(ledTypeId) => set({ ledTypeId })} />
+          <Select
+            ariaLabel="led type"
+            value={f.ledTypeId}
+            options={LED_TYPES.map((t) => ({ value: t.id, label: t.name }))}
+            onChange={(ledTypeId) => set({ ledTypeId })}
+          />
         </Field>
         <Field label="Tags">
           <TagsInput ariaLabel="tags" value={f.tags} onChange={(tags) => set({ tags })} />
         </Field>
-        <Checkbox label="Reverse wiring direction" checked={f.reversed} onChange={(reversed) => set({ reversed })} />
+        <Checkbox
+          label="Reverse wiring direction"
+          checked={f.reversed}
+          onChange={(reversed) => set({ reversed })}
+        />
       </Section>
       <Section title="Geometry">
         <GeometryFields fixture={f} />
       </Section>
       <Section title="Transform">
         <Field label="Position">
-          <Vec3Input ariaLabel="position" value={f.transform.position} onChange={(position) => setT({ position })} />
+          <Vec3Input
+            ariaLabel="position"
+            value={f.transform.position}
+            onChange={(position) => setT({ position })}
+          />
         </Field>
         <Field label="Rotation°">
-          <Vec3Input ariaLabel="rotation" value={f.transform.rotation} onChange={(rotation) => setT({ rotation })} />
+          <Vec3Input
+            ariaLabel="rotation"
+            value={f.transform.rotation}
+            onChange={(rotation) => setT({ rotation })}
+          />
         </Field>
         <Field label="Scale">
           <Vec3Input ariaLabel="scale" value={f.transform.scale} onChange={(scale) => setT({ scale })} />
@@ -268,7 +371,14 @@ function MultiFixtureInspector({ fixtures }: { fixtures: Fixture[] }) {
           ariaLabel="add tags"
           value={[]}
           onChange={(tags) =>
-            apply((p) => fixtures.reduce((acc, f) => cmd.updateFixture(acc, f.id, { tags: [...new Set([...f.tags, ...tags])] }), p), "Tag fixtures")
+            apply(
+              (p) =>
+                fixtures.reduce(
+                  (acc, f) => cmd.updateFixture(acc, f.id, { tags: [...new Set([...f.tags, ...tags])] }),
+                  p,
+                ),
+              "Tag fixtures",
+            )
           }
         />
       </Field>
@@ -282,7 +392,10 @@ function MultiFixtureInspector({ fixtures }: { fixtures: Fixture[] }) {
         >
           Duplicate
         </button>
-        <button className="danger" onClick={() => apply((p) => cmd.removeFixtures(p, ids), "Delete fixtures")}>
+        <button
+          className="danger"
+          onClick={() => apply((p) => cmd.removeFixtures(p, ids), "Delete fixtures")}
+        >
           Delete
         </button>
       </div>
@@ -323,7 +436,11 @@ function ControllerInspector({ controller }: { controller: Controller }) {
       <Section
         title="Controller"
         actions={
-          <button className="ghost danger" title="Delete controller" onClick={() => apply((p) => cmd.removeController(p, c.id), "Delete controller")}>
+          <button
+            className="ghost danger"
+            title="Delete controller"
+            onClick={() => apply((p) => cmd.removeController(p, c.id), "Delete controller")}
+          >
             🗑
           </button>
         }
@@ -332,29 +449,62 @@ function ControllerInspector({ controller }: { controller: Controller }) {
           <TextInput ariaLabel="controller name" value={c.name} onChange={(name) => set({ name })} />
         </Field>
         <Field label="Kind">
-          <Select ariaLabel="controller kind" value={c.kind} options={opts(CONTROLLER_KINDS)} onChange={(kind) => set({ kind })} />
+          <Select
+            ariaLabel="controller kind"
+            value={c.kind}
+            options={opts(CONTROLLER_KINDS)}
+            onChange={(kind) => set({ kind })}
+          />
         </Field>
         <Field label="Host / IP">
-          <TextInput ariaLabel="host" placeholder="192.168.1.50" value={c.host} onChange={(host) => set({ host })} />
+          <TextInput
+            ariaLabel="host"
+            placeholder="192.168.1.50"
+            value={c.host}
+            onChange={(host) => set({ host })}
+          />
         </Field>
         <Field label="Protocol">
           <Select
             ariaLabel="protocol"
             value={c.protocol}
-            options={PROTOCOLS.map((p) => ({ value: p, label: p === "ddp" ? "DDP (recommended for WLED)" : p === "e131" ? "E1.31 / sACN" : "Art-Net" }))}
+            options={PROTOCOLS.map((p) => ({
+              value: p,
+              label: p === "ddp" ? "DDP (recommended for WLED)" : p === "e131" ? "E1.31 / sACN" : "Art-Net",
+            }))}
             onChange={(protocol) => set({ protocol })}
           />
         </Field>
         <Field label="Port" hint="0 = protocol default">
-          <NumberInput ariaLabel="port" value={c.port} min={0} max={65535} integer onChange={(port) => set({ port })} />
+          <NumberInput
+            ariaLabel="port"
+            value={c.port}
+            min={0}
+            max={65535}
+            integer
+            onChange={(port) => set({ port })}
+          />
         </Field>
         {c.protocol !== "ddp" && (
           <>
             <Field label="Start universe">
-              <NumberInput ariaLabel="start universe" value={c.universeStart} min={0} integer onChange={(universeStart) => set({ universeStart })} />
+              <NumberInput
+                ariaLabel="start universe"
+                value={c.universeStart}
+                min={0}
+                integer
+                onChange={(universeStart) => set({ universeStart })}
+              />
             </Field>
             <Field label="Channels/universe">
-              <NumberInput ariaLabel="channels per universe" value={c.channelsPerUniverse} min={3} max={512} integer onChange={(channelsPerUniverse) => set({ channelsPerUniverse })} />
+              <NumberInput
+                ariaLabel="channels per universe"
+                value={c.channelsPerUniverse}
+                min={3}
+                max={512}
+                integer
+                onChange={(channelsPerUniverse) => set({ channelsPerUniverse })}
+              />
             </Field>
           </>
         )}
@@ -363,20 +513,41 @@ function ControllerInspector({ controller }: { controller: Controller }) {
 
       <Section title="Output processing">
         <Field label="Brightness">
-          <Slider ariaLabel="controller brightness" value={c.brightness} min={0} max={1} onChange={(brightness) => set({ brightness }, true)} onCommit={() => studio.getState().seal()} />
+          <Slider
+            ariaLabel="controller brightness"
+            value={c.brightness}
+            min={0}
+            max={1}
+            onChange={(brightness) => set({ brightness }, true)}
+            onCommit={() => studio.getState().seal()}
+          />
         </Field>
         <Field label="Gamma" hint="WLED applies its own gamma; leave at 1 for WLED.">
-          <NumberInput ariaLabel="gamma" value={c.gamma} min={0.1} max={5} onChange={(gamma) => set({ gamma })} />
+          <NumberInput
+            ariaLabel="gamma"
+            value={c.gamma}
+            min={0.1}
+            max={5}
+            onChange={(gamma) => set({ gamma })}
+          />
         </Field>
         <Field label="Power limit (A)" hint="0 = unlimited">
-          <NumberInput ariaLabel="max amps" value={c.maxAmps} min={0} onChange={(maxAmps) => set({ maxAmps })} />
+          <NumberInput
+            ariaLabel="max amps"
+            value={c.maxAmps}
+            min={0}
+            onChange={(maxAmps) => set({ maxAmps })}
+          />
         </Field>
       </Section>
 
       <Section
         title={`Outputs · ${layout.totalPixels} px`}
         actions={
-          <button className="ghost" onClick={() => set({ outputs: [...c.outputs, { pin: null, pixelCount: 0, colorOrder: "RGB" }] })}>
+          <button
+            className="ghost"
+            onClick={() => set({ outputs: [...c.outputs, { pin: null, pixelCount: 0, colorOrder: "RGB" }] })}
+          >
             + output
           </button>
         }
@@ -401,7 +572,11 @@ function ControllerInspector({ controller }: { controller: Controller }) {
                     value={o.pin ?? -1}
                     min={-1}
                     integer
-                    onChange={(pin) => set({ outputs: c.outputs.map((x, j) => (j === i ? { ...x, pin: pin < 0 ? null : pin } : x)) })}
+                    onChange={(pin) =>
+                      set({
+                        outputs: c.outputs.map((x, j) => (j === i ? { ...x, pin: pin < 0 ? null : pin } : x)),
+                      })
+                    }
                   />
                 </td>
                 <td>
@@ -410,7 +585,9 @@ function ControllerInspector({ controller }: { controller: Controller }) {
                     value={o.pixelCount}
                     min={0}
                     integer
-                    onChange={(pixelCount) => set({ outputs: c.outputs.map((x, j) => (j === i ? { ...x, pixelCount } : x)) })}
+                    onChange={(pixelCount) =>
+                      set({ outputs: c.outputs.map((x, j) => (j === i ? { ...x, pixelCount } : x)) })
+                    }
                   />
                   <span className="muted small"> ({layout.outputs[i]?.length ?? 0})</span>
                 </td>
@@ -419,11 +596,18 @@ function ControllerInspector({ controller }: { controller: Controller }) {
                     ariaLabel={`output ${i + 1} order`}
                     value={o.colorOrder}
                     options={opts(COLOR_ORDERS)}
-                    onChange={(colorOrder) => set({ outputs: c.outputs.map((x, j) => (j === i ? { ...x, colorOrder } : x)) })}
+                    onChange={(colorOrder) =>
+                      set({ outputs: c.outputs.map((x, j) => (j === i ? { ...x, colorOrder } : x)) })
+                    }
                   />
                 </td>
                 <td>
-                  <button className="ghost" disabled={c.outputs.length <= 1} aria-label={`remove output ${i + 1}`} onClick={() => set({ outputs: c.outputs.filter((_, j) => j !== i) })}>
+                  <button
+                    className="ghost"
+                    disabled={c.outputs.length <= 1}
+                    aria-label={`remove output ${i + 1}`}
+                    onClick={() => set({ outputs: c.outputs.filter((_, j) => j !== i) })}
+                  >
                     ✕
                   </button>
                 </td>
@@ -432,7 +616,9 @@ function ControllerInspector({ controller }: { controller: Controller }) {
           </tbody>
         </table>
         <div className="row">
-          <button onClick={() => apply((p) => cmd.autoPatch(p, c.id), "Auto-patch")}>Auto-patch unpatched fixtures</button>
+          <button onClick={() => apply((p) => cmd.autoPatch(p, c.id), "Auto-patch")}>
+            Auto-patch unpatched fixtures
+          </button>
         </div>
         {issues.map((i, k) => (
           <div key={k} className={`issue ${i.severity}`}>
@@ -443,11 +629,17 @@ function ControllerInspector({ controller }: { controller: Controller }) {
 
       {c.kind === "wled" && (
         <Section title="WLED">
-          {bridgeStatus !== "open" && <p className="muted">Connect to the bridge (toolbar) to talk to devices.</p>}
+          {bridgeStatus !== "open" && (
+            <p className="muted">Connect to the bridge (toolbar) to talk to devices.</p>
+          )}
           <div className="row wrap">
             <button
               disabled={busy || bridgeStatus !== "open" || !c.host}
-              onClick={() => run("Read info", async () => setInfo(await runtime.rpc<WledInfo>("wled.info", { host: c.host })))}
+              onClick={() =>
+                run("Read info", async () =>
+                  setInfo(await runtime.rpc<WledInfo>("wled.info", { host: c.host })),
+                )
+              }
             >
               Read info
             </button>
@@ -457,7 +649,11 @@ function ControllerInspector({ controller }: { controller: Controller }) {
               onClick={() =>
                 run("Push config", async () => {
                   if (!window.confirm(`Overwrite LED hardware settings on ${c.host} and reboot it?`)) return;
-                  await runtime.rpc("wled.applyConfig", { host: c.host, config: buildWledConfigPatch(compiled(), project.fixtures), reboot: true });
+                  await runtime.rpc("wled.applyConfig", {
+                    host: c.host,
+                    config: buildWledConfigPatch(compiled(), project.fixtures),
+                    reboot: true,
+                  });
                   notify("info", `Config pushed to ${c.name}; device is rebooting.`);
                 })
               }
@@ -479,8 +675,15 @@ function ControllerInspector({ controller }: { controller: Controller }) {
                   });
                   const side = Math.max(8, Math.ceil(Math.sqrt(phys.length) * 1.5));
                   const map = buildLedmap2D(xyz, phys, side, side);
-                  await runtime.rpc("wled.uploadFile", { host: c.host, path: "/ledmap.json", content: serializeLedmap(map) });
-                  notify("info", `ledmap.json (${side}×${side}) uploaded to ${c.name}. Reboot WLED to apply.`);
+                  await runtime.rpc("wled.uploadFile", {
+                    host: c.host,
+                    path: "/ledmap.json",
+                    content: serializeLedmap(map),
+                  });
+                  notify(
+                    "info",
+                    `ledmap.json (${side}×${side}) uploaded to ${c.name}. Reboot WLED to apply.`,
+                  );
                 })
               }
             >
@@ -496,7 +699,9 @@ function ControllerInspector({ controller }: { controller: Controller }) {
               <dt>LEDs</dt>
               <dd>
                 {info.leds.count}
-                {info.leds.count !== layout.totalPixels && <span className="warn"> (layout has {layout.totalPixels})</span>}
+                {info.leds.count !== layout.totalPixels && (
+                  <span className="warn"> (layout has {layout.totalPixels})</span>
+                )}
               </dd>
               <dt>MAC</dt>
               <dd>{info.mac}</dd>
@@ -542,7 +747,15 @@ function MaskFields({ layer, locator }: { layer: Layer; locator: LayerLocator })
   );
 }
 
-export function LayerInspector({ layer, locator, localTime }: { layer: Layer; locator: LayerLocator; localTime?: number }) {
+export function LayerInspector({
+  layer,
+  locator,
+  localTime,
+}: {
+  layer: Layer;
+  locator: LayerLocator;
+  localTime?: number;
+}) {
   const runtime = useRuntime();
   const time = useStudio((s) => s.time);
   const error = useStudio((s) => s.layerErrors[layer.id]);
@@ -555,38 +768,74 @@ export function LayerInspector({ layer, locator, localTime }: { layer: Layer; lo
         title="Layer"
         actions={
           "layerId" in locator ? (
-            <button className="ghost danger" title="Delete layer" onClick={() => apply((p) => cmd.removeLayer(p, layer.id), "Delete layer")}>
+            <button
+              className="ghost danger"
+              title="Delete layer"
+              onClick={() => apply((p) => cmd.removeLayer(p, layer.id), "Delete layer")}
+            >
               🗑
             </button>
           ) : undefined
         }
       >
         <Field label="Name">
-          <TextInput ariaLabel="layer name" value={layer.name} placeholder={effect?.name} onChange={(name) => set({ name })} />
+          <TextInput
+            ariaLabel="layer name"
+            value={layer.name}
+            placeholder={effect?.name}
+            onChange={(name) => set({ name })}
+          />
         </Field>
         <Field label="Effect">
           <Select
             ariaLabel="effect"
             value={layer.effectId}
-            options={runtime.registry.list().map((e) => ({ value: e.id, label: `${e.name} (${e.category})` }))}
+            options={runtime.registry
+              .list()
+              .map((e) => ({ value: e.id, label: `${e.name} (${e.category})` }))}
             onChange={(effectId) => set({ effectId, params: {} })}
           />
         </Field>
         <Field label="Opacity">
-          <Slider ariaLabel="opacity" value={layer.opacity} min={0} max={1} onChange={(opacity) => set({ opacity }, true)} onCommit={() => studio.getState().seal()} />
+          <Slider
+            ariaLabel="opacity"
+            value={layer.opacity}
+            min={0}
+            max={1}
+            onChange={(opacity) => set({ opacity }, true)}
+            onCommit={() => studio.getState().seal()}
+          />
         </Field>
         <Field label="Blend">
-          <Select ariaLabel="blend" value={layer.blend} options={opts(BLEND_MODES)} onChange={(blend) => set({ blend })} />
+          <Select
+            ariaLabel="blend"
+            value={layer.blend}
+            options={opts(BLEND_MODES)}
+            onChange={(blend) => set({ blend })}
+          />
         </Field>
         <Field label="Speed">
-          <Slider ariaLabel="speed" value={layer.speed} min={-4} max={4} onChange={(speed) => set({ speed }, true)} onCommit={() => studio.getState().seal()} />
+          <Slider
+            ariaLabel="speed"
+            value={layer.speed}
+            min={-4}
+            max={4}
+            onChange={(speed) => set({ speed }, true)}
+            onCommit={() => studio.getState().seal()}
+          />
         </Field>
         <Checkbox label="Enabled" checked={layer.enabled} onChange={(enabled) => set({ enabled })} />
       </Section>
       {effect ? (
         <Section title={effect.name}>
           <p className="muted small">{effect.description}</p>
-          <ParamEditor layer={layer} effect={effect} locator={locator} localTime={localTime ?? time} error={error} />
+          <ParamEditor
+            layer={layer}
+            effect={effect}
+            locator={locator}
+            localTime={localTime ?? time}
+            error={error}
+          />
         </Section>
       ) : (
         <div className="error-box">Unknown effect “{layer.effectId}”</div>
@@ -603,31 +852,60 @@ function ClipInspector({ clipId }: { clipId: string }) {
   const time = useStudio((s) => s.time);
   const clip = project.timeline.tracks.flatMap((t) => t.clips).find((c) => c.id === clipId);
   if (!clip) return null;
-  const set = (changes: Parameters<typeof cmd.updateClip>[2]) => apply((p) => cmd.updateClip(p, clipId, changes), "Edit clip");
+  const set = (changes: Parameters<typeof cmd.updateClip>[2]) =>
+    apply((p) => cmd.updateClip(p, clipId, changes), "Edit clip");
   return (
     <>
       <Section
         title="Clip"
         actions={
-          <button className="ghost danger" title="Delete clip" onClick={() => apply((p) => cmd.removeClip(p, clipId), "Delete clip")}>
+          <button
+            className="ghost danger"
+            title="Delete clip"
+            onClick={() => apply((p) => cmd.removeClip(p, clipId), "Delete clip")}
+          >
             🗑
           </button>
         }
       >
         <Field label="Start (s)">
-          <NumberInput ariaLabel="clip start" value={clip.start} min={0} onChange={(start) => set({ start })} />
+          <NumberInput
+            ariaLabel="clip start"
+            value={clip.start}
+            min={0}
+            onChange={(start) => set({ start })}
+          />
         </Field>
         <Field label="Duration (s)">
-          <NumberInput ariaLabel="clip duration" value={clip.duration} min={0.01} onChange={(duration) => set({ duration })} />
+          <NumberInput
+            ariaLabel="clip duration"
+            value={clip.duration}
+            min={0.01}
+            onChange={(duration) => set({ duration })}
+          />
         </Field>
         <Field label="Fade in (s)">
-          <NumberInput ariaLabel="fade in" value={clip.fadeIn} min={0} onChange={(fadeIn) => set({ fadeIn })} />
+          <NumberInput
+            ariaLabel="fade in"
+            value={clip.fadeIn}
+            min={0}
+            onChange={(fadeIn) => set({ fadeIn })}
+          />
         </Field>
         <Field label="Fade out (s)">
-          <NumberInput ariaLabel="fade out" value={clip.fadeOut} min={0} onChange={(fadeOut) => set({ fadeOut })} />
+          <NumberInput
+            ariaLabel="fade out"
+            value={clip.fadeOut}
+            min={0}
+            onChange={(fadeOut) => set({ fadeOut })}
+          />
         </Field>
       </Section>
-      <LayerInspector layer={clip.layer} locator={{ clipId }} localTime={Math.max(0, Math.min(clip.duration, time - clip.start))} />
+      <LayerInspector
+        layer={clip.layer}
+        locator={{ clipId }}
+        localTime={Math.max(0, Math.min(clip.duration, time - clip.start))}
+      />
     </>
   );
 }
@@ -641,7 +919,11 @@ function ModelInspector({ id }: { id: string }) {
     <Section
       title={`Model · ${m.format}`}
       actions={
-        <button className="ghost danger" title="Remove model" onClick={() => apply((p) => cmd.removeModel(p, id), "Remove model")}>
+        <button
+          className="ghost danger"
+          title="Remove model"
+          onClick={() => apply((p) => cmd.removeModel(p, id), "Remove model")}
+        >
           🗑
         </button>
       }
@@ -650,16 +932,35 @@ function ModelInspector({ id }: { id: string }) {
         <TextInput ariaLabel="model name" value={m.name} onChange={(name) => set({ name })} />
       </Field>
       <Field label="Position">
-        <Vec3Input ariaLabel="model position" value={m.transform.position} onChange={(position) => set({ transform: { ...m.transform, position } })} />
+        <Vec3Input
+          ariaLabel="model position"
+          value={m.transform.position}
+          onChange={(position) => set({ transform: { ...m.transform, position } })}
+        />
       </Field>
       <Field label="Rotation°">
-        <Vec3Input ariaLabel="model rotation" value={m.transform.rotation} onChange={(rotation) => set({ transform: { ...m.transform, rotation } })} />
+        <Vec3Input
+          ariaLabel="model rotation"
+          value={m.transform.rotation}
+          onChange={(rotation) => set({ transform: { ...m.transform, rotation } })}
+        />
       </Field>
       <Field label="Scale">
-        <Vec3Input ariaLabel="model scale" value={m.transform.scale} onChange={(scale) => set({ transform: { ...m.transform, scale } })} />
+        <Vec3Input
+          ariaLabel="model scale"
+          value={m.transform.scale}
+          onChange={(scale) => set({ transform: { ...m.transform, scale } })}
+        />
       </Field>
       <Field label="Opacity">
-        <Slider ariaLabel="model opacity" value={m.opacity} min={0} max={1} onChange={(opacity) => set({ opacity }, true)} onCommit={() => studio.getState().seal()} />
+        <Slider
+          ariaLabel="model opacity"
+          value={m.opacity}
+          min={0}
+          max={1}
+          onChange={(opacity) => set({ opacity }, true)}
+          onCommit={() => studio.getState().seal()}
+        />
       </Field>
       <Checkbox label="Visible" checked={m.visible} onChange={(visible) => set({ visible })} />
       <p className="muted small">Tip: models in meters? Set scale to 1000 for a mm project.</p>

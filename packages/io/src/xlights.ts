@@ -23,7 +23,12 @@ function attr(xml: string, name: string): string | null {
 }
 
 function decodeEntities(s: string): string {
-  return s.replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+  return s
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
 }
 
 export function parseXModel(xml: string): XModel {
@@ -43,7 +48,8 @@ export function parseXModel(xml: string): XModel {
   if (compressed !== null) {
     for (const entry of compressed.split(";").filter(Boolean)) {
       const [n, r, c, l] = entry.split(",").map(Number);
-      if (Number.isFinite(n) && Number.isFinite(r) && Number.isFinite(c)) place(n!, r!, c!, Number.isFinite(l) ? l! : 0);
+      if (Number.isFinite(n) && Number.isFinite(r) && Number.isFinite(c))
+        place(n!, r!, c!, Number.isFinite(l) ? l! : 0);
     }
   } else if (plain !== null) {
     plain.split("|").forEach((layerStr, layer) => {

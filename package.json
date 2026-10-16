@@ -13,15 +13,16 @@
     "dev": "pnpm --filter @ledlay/studio dev",
     "bridge": "pnpm --filter @ledlay/bridge start",
     "build": "pnpm -r --if-present build",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p apps/studio/tsconfig.json --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "pnpm --filter @ledlay/studio test:e2e",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test"
+    "test:e2e": "pnpm --filter @ledlay/bridge build && pnpm --filter @ledlay/studio test:e2e",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test",
+    "ledlay": "pnpm --filter @ledlay/bridge cli"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

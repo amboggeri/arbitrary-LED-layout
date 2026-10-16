@@ -40,7 +40,11 @@ class FakeSocket implements SocketLike {
 
 describe("frame messages", () => {
   it("round-trips", () => {
-    const enc = encodeFrameMessage({ controllerIndex: 513, channelsPerPixel: 4, data: new Uint8Array([1, 2, 3, 4]) });
+    const enc = encodeFrameMessage({
+      controllerIndex: 513,
+      channelsPerPixel: 4,
+      data: new Uint8Array([1, 2, 3, 4]),
+    });
     expect([...enc.subarray(0, 5)]).toEqual([0x46, 1, 2, 1, 4]);
     const dec = decodeFrameMessage(enc);
     expect(dec.controllerIndex).toBe(513);
@@ -48,7 +52,9 @@ describe("frame messages", () => {
     expect([...dec.data]).toEqual([1, 2, 3, 4]);
   });
   it("validates", () => {
-    expect(() => encodeFrameMessage({ controllerIndex: 70000, channelsPerPixel: 3, data: new Uint8Array() })).toThrow();
+    expect(() =>
+      encodeFrameMessage({ controllerIndex: 70000, channelsPerPixel: 3, data: new Uint8Array() }),
+    ).toThrow();
     expect(() => decodeFrameMessage(new Uint8Array([1, 2]))).toThrow(/Not a frame/);
     expect(() => decodeFrameMessage(new Uint8Array([0x46, 9, 0, 0, 3]))).toThrow(/version/);
     expect(() => decodeFrameMessage(new Uint8Array([0x46, 1, 0, 0, 5]))).toThrow(/channels-per-pixel/);
@@ -57,10 +63,17 @@ describe("frame messages", () => {
 
 describe("client messages", () => {
   it("parses and applies defaults", () => {
-    expect(parseClientMessage('{"type":"rpc","id":1,"method":"ping"}')).toEqual({ type: "rpc", id: 1, method: "ping", params: {} });
+    expect(parseClientMessage('{"type":"rpc","id":1,"method":"ping"}')).toEqual({
+      type: "rpc",
+      id: 1,
+      method: "ping",
+      params: {},
+    });
     expect(() => parseClientMessage('{"type":"rpc","id":1,"method":"rm -rf"}')).toThrow();
     expect(() => parseClientMessage("nope")).toThrow();
-    const c = parseClientMessage(JSON.stringify({ type: "setControllers", controllers: [{ id: "c", name: "c" }] }));
+    const c = parseClientMessage(
+      JSON.stringify({ type: "setControllers", controllers: [{ id: "c", name: "c" }] }),
+    );
     expect(c.type === "setControllers" && c.controllers[0]!.protocol).toBe("ddp");
   });
 });
@@ -133,7 +146,11 @@ describe("BridgeClient", () => {
 
   it("forwards stats and ignores junk", () => {
     const stats = vi.fn();
-    const c = new BridgeClient({ url: "ws://x", socketFactory: (u) => (sockets[0] = new FakeSocket(u)), onStats: stats });
+    const c = new BridgeClient({
+      url: "ws://x",
+      socketFactory: (u) => (sockets[0] = new FakeSocket(u)),
+      onStats: stats,
+    });
     c.connect();
     sockets[0]!.open();
     sockets[0]!.receive({ type: "stats", stats: { frames: 1 } });

@@ -2,7 +2,13 @@
 import * as THREE from "three";
 import type { SceneModel } from "@ledlay/core";
 
-const neutral = () => new THREE.MeshStandardMaterial({ color: 0x8892a6, roughness: 0.85, metalness: 0.05, side: THREE.DoubleSide });
+const neutral = () =>
+  new THREE.MeshStandardMaterial({
+    color: 0x8892a6,
+    roughness: 0.85,
+    metalness: 0.05,
+    side: THREE.DoubleSide,
+  });
 
 export async function loadModel(format: SceneModel["format"], uri: string): Promise<THREE.Object3D> {
   switch (format) {

@@ -14,12 +14,33 @@ export interface LedType {
 }
 
 export const LED_TYPES: readonly LedType[] = [
-  { id: "ws2812b", name: "WS2812B / NeoPixel", nativeOrder: "GRB", maPerChannel: 20, voltage: 5, wledType: 22 },
-  { id: "ws2811", name: "WS2811 (12V pixel)", nativeOrder: "RGB", maPerChannel: 20, voltage: 12, wledType: 22 },
+  {
+    id: "ws2812b",
+    name: "WS2812B / NeoPixel",
+    nativeOrder: "GRB",
+    maPerChannel: 20,
+    voltage: 5,
+    wledType: 22,
+  },
+  {
+    id: "ws2811",
+    name: "WS2811 (12V pixel)",
+    nativeOrder: "RGB",
+    maPerChannel: 20,
+    voltage: 12,
+    wledType: 22,
+  },
   { id: "ws2815", name: "WS2815", nativeOrder: "GRB", maPerChannel: 12, voltage: 12, wledType: 22 },
   { id: "sk6812rgbw", name: "SK6812 RGBW", nativeOrder: "GRBW", maPerChannel: 20, voltage: 5, wledType: 30 },
   { id: "apa102", name: "APA102 / SK9822", nativeOrder: "BGR", maPerChannel: 20, voltage: 5, wledType: 51 },
-  { id: "generic-rgb", name: "Generic RGB pixel", nativeOrder: "RGB", maPerChannel: 20, voltage: 5, wledType: 22 },
+  {
+    id: "generic-rgb",
+    name: "Generic RGB pixel",
+    nativeOrder: "RGB",
+    maPerChannel: 20,
+    voltage: 5,
+    wledType: 22,
+  },
 ];
 
 export function getLedType(id: string): LedType {

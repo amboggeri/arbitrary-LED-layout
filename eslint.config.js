@@ -2,7 +2,15 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["**/dist/**", "**/coverage/**", "**/node_modules/**", "**/playwright-report/**", "**/test-results/**"] },
+  {
+    ignores: [
+      "**/dist/**",
+      "**/coverage/**",
+      "**/node_modules/**",
+      "**/playwright-report/**",
+      "**/test-results/**",
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -16,7 +24,10 @@ export default tseslint.config(
         "error",
         {
           patterns: [
-            { group: ["../../*/src/*", "@ledlay/*/src/*"], message: "Import packages through their public entry point." },
+            {
+              group: ["../../*/src/*", "@ledlay/*/src/*"],
+              message: "Import packages through their public entry point.",
+            },
           ],
         },
       ],

@@ -26,7 +26,9 @@ export function playHeadless(project: Project, opts: HeadlessOptions): HeadlessR
   const compiled = compileLayout(project);
   const renderer = new Renderer(opts.registry, compiled);
   const targets = compiled.controllers
-    .filter((c) => c.controller.enabled && (!opts.controllerIds || opts.controllerIds.includes(c.controller.id)))
+    .filter(
+      (c) => c.controller.enabled && (!opts.controllerIds || opts.controllerIds.includes(c.controller.id)),
+    )
     .map((c) => ({ cc: c, enc: new ControllerEncoder(c), cpp: c.layout.outputs[0]?.channelsPerPixel ?? 3 }));
   const sender = new FrameSender(opts.transport, { sourceName: `ledlay:${project.name}` });
   const frame = renderer.createFrame();
@@ -41,7 +43,8 @@ export function playHeadless(project: Project, opts: HeadlessOptions): HeadlessR
         return;
       }
       renderer.renderProject(project, t, frame);
-      for (const { cc, enc, cpp } of targets) void sender.send(cc.controller, enc.encode(frame, opts.brightness ?? 1).data, cpp);
+      for (const { cc, enc, cpp } of targets)
+        void sender.send(cc.controller, enc.encode(frame, opts.brightness ?? 1).data, cpp);
       opts.onFrame?.(t);
     },
   });

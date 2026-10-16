@@ -1,7 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- tests poke at app internals loosely */
 type Win = Window & {
-  __ledlay: { studio: { getState(): Record<string, any> }; runtime: { compiled: { space: { count: number } }; currentFrame: Float32Array } };
+  __ledlay: {
+    studio: { getState(): Record<string, any> };
+    runtime: { compiled: { space: { count: number } }; currentFrame: Float32Array };
+  };
   __ledlayViewport?: { ledCount: number };
 };
 
@@ -43,13 +47,17 @@ test("adds a fixture from the outliner, edits it in the inspector, and undoes", 
 });
 
 test("plays and pauses with the space bar, advancing time and changing colors", async ({ page }) => {
-  const before = await page.evaluate(() => Array.from((window as unknown as Win).__ledlay.runtime.currentFrame.slice(0, 30)));
+  const before = await page.evaluate(() =>
+    Array.from((window as unknown as Win).__ledlay.runtime.currentFrame.slice(0, 30)),
+  );
   await page.locator("body").press("Space");
   await page.waitForTimeout(600);
   await page.locator("body").press("Space");
   const t = await state(page, (s) => s.time as number);
   expect(t).toBeGreaterThan(0.2);
-  const after = await page.evaluate(() => Array.from((window as unknown as Win).__ledlay.runtime.currentFrame.slice(0, 30)));
+  const after = await page.evaluate(() =>
+    Array.from((window as unknown as Win).__ledlay.runtime.currentFrame.slice(0, 30)),
+  );
   expect(after).not.toEqual(before);
   await expect(page.getByTestId("time")).not.toHaveText("0:00.00");
 });

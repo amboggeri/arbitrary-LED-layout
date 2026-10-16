@@ -23,7 +23,10 @@ export interface ControllerLayout {
   totalChannels: number;
 }
 
-export function computeControllerLayout(controller: Controller, fixtures: readonly Fixture[]): ControllerLayout {
+export function computeControllerLayout(
+  controller: Controller,
+  fixtures: readonly Fixture[],
+): ControllerLayout {
   const outputs: OutputRange[] = [];
   let offset = 0;
   let totalChannels = 0;
@@ -60,7 +63,8 @@ export function validatePatch(project: Project): PatchIssue[] {
 
   const seen = new Set<string>();
   for (const f of project.fixtures) {
-    if (seen.has(f.id)) issues.push({ severity: "error", message: `Duplicate fixture id ${f.id}`, fixtureId: f.id });
+    if (seen.has(f.id))
+      issues.push({ severity: "error", message: `Duplicate fixture id ${f.id}`, fixtureId: f.id });
     seen.add(f.id);
   }
 
@@ -70,7 +74,11 @@ export function validatePatch(project: Project): PatchIssue[] {
     if (!f.patch) continue;
     const c = controllers.get(f.patch.controllerId);
     if (!c) {
-      issues.push({ severity: "error", message: `${f.name}: patched to a missing controller`, fixtureId: f.id });
+      issues.push({
+        severity: "error",
+        message: `${f.name}: patched to a missing controller`,
+        fixtureId: f.id,
+      });
       continue;
     }
     const out = c.outputs[f.patch.output];
@@ -111,7 +119,8 @@ export function validatePatch(project: Project): PatchIssue[] {
 
   for (const c of project.controllers) {
     if (!c.enabled) continue;
-    if (!c.host) issues.push({ severity: "warning", message: `${c.name}: no host/IP set`, controllerId: c.id });
+    if (!c.host)
+      issues.push({ severity: "warning", message: `${c.name}: no host/IP set`, controllerId: c.id });
     const layout = computeControllerLayout(c, project.fixtures);
     if (layout.totalPixels === 0) {
       issues.push({ severity: "warning", message: `${c.name}: no fixtures patched`, controllerId: c.id });
@@ -120,12 +129,21 @@ export function validatePatch(project: Project): PatchIssue[] {
       const universes = Math.ceil(layout.totalChannels / c.channelsPerUniverse);
       const max = c.protocol === "e131" ? 63999 : 32767;
       if (c.universeStart + universes - 1 > max) {
-        issues.push({ severity: "error", message: `${c.name}: universe range exceeds ${max}`, controllerId: c.id });
+        issues.push({
+          severity: "error",
+          message: `${c.name}: universe range exceeds ${max}`,
+          controllerId: c.id,
+        });
       }
     }
   }
   for (const f of project.fixtures) {
-    if (!f.patch) issues.push({ severity: "warning", message: `${f.name}: not patched to a controller`, fixtureId: f.id });
+    if (!f.patch)
+      issues.push({
+        severity: "warning",
+        message: `${f.name}: not patched to a controller`,
+        fixtureId: f.id,
+      });
   }
   return issues;
 }

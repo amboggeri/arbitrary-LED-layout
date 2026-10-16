@@ -21,7 +21,11 @@ export function loadAutosave(storage: Storage | undefined = globalThis.localStor
   }
 }
 
-export function downloadBlob(data: string | Uint8Array, filename: string, mime = "application/octet-stream"): void {
+export function downloadBlob(
+  data: string | Uint8Array,
+  filename: string,
+  mime = "application/octet-stream",
+): void {
   const part: BlobPart = typeof data === "string" ? data : new Uint8Array(data);
   const url = URL.createObjectURL(new Blob([part], { type: mime }));
   const a = document.createElement("a");
@@ -34,7 +38,12 @@ export function downloadBlob(data: string | Uint8Array, filename: string, mime =
 }
 
 export function safeFileName(name: string): string {
-  return name.trim().replace(/[^\w.-]+/g, "_").replace(/^_+|_+$/g, "") || "untitled";
+  return (
+    name
+      .trim()
+      .replace(/[^\w.-]+/g, "_")
+      .replace(/^_+|_+$/g, "") || "untitled"
+  );
 }
 
 /** Prompt the user for a file. Resolves null when cancelled. */

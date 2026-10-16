@@ -1,7 +1,13 @@
 /** Offline rendering ("baking") of a project into sequences for standalone playback. */
 import type { Project } from "@ledlay/core";
 import type { EffectRegistry } from "@ledlay/effects";
-import { compileLayout, ControllerEncoder, controllerChannelCount, Renderer, timelineTime } from "@ledlay/engine";
+import {
+  compileLayout,
+  ControllerEncoder,
+  controllerChannelCount,
+  Renderer,
+  timelineTime,
+} from "@ledlay/engine";
 import { FseqWriter } from "./fseq";
 
 export interface BakeOptions {
@@ -27,7 +33,11 @@ export function bakeFseq(project: Project, registry: EffectRegistry, opts: BakeO
   const frames = Math.max(1, Math.round((duration * 1000) / stepTimeMs));
   const vh = [{ code: "sp", value: "ledlay" }];
   if (opts.mediaFile) vh.push({ code: "mf", value: opts.mediaFile });
-  const writer = new FseqWriter({ channelCount: controllerChannelCount(cc), stepTimeMs, variableHeaders: vh });
+  const writer = new FseqWriter({
+    channelCount: controllerChannelCount(cc),
+    stepTimeMs,
+    variableHeaders: vh,
+  });
   const frame = renderer.createFrame();
   for (let i = 0; i < frames; i++) {
     let t = (i * stepTimeMs) / 1000;

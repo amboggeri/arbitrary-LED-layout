@@ -74,7 +74,12 @@ describe("playHeadless", () => {
   it("can be restricted to specific controllers and stopped manually", async () => {
     const transport = new MemoryTransport();
     const clock = new FakeClock();
-    const run = playHeadless(project(), { transport, registry: createDefaultRegistry(), controllerIds: ["nope"], clock });
+    const run = playHeadless(project(), {
+      transport,
+      registry: createDefaultRegistry(),
+      controllerIds: ["nope"],
+      clock,
+    });
     clock.run(300);
     run.stop();
     await run.done;

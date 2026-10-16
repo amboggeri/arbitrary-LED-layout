@@ -8,5 +8,8 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "dependencies": {"@ledlay/core": "workspace:*", "zod": "^4.6.7"}
+  "dependencies": {
+    "@ledlay/core": "workspace:*",
+    "zod": "^4.6.7"
+  }
 }

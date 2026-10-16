@@ -3,5 +3,12 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["packages/*/src", "packages/*/test", "apps/bridge/src", "apps/bridge/test", "*.config.ts", "packages/*/*.config.ts"]
+  "include": [
+    "packages/*/src",
+    "packages/*/test",
+    "apps/bridge/src",
+    "apps/bridge/test",
+    "*.config.ts",
+    "packages/*/*.config.ts"
+  ]
 }

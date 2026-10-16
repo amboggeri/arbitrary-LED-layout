@@ -8,7 +8,14 @@
 import { createServer, type IncomingMessage, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import type { Controller } from "@ledlay/core";
-import { DEFAULT_BRIDGE_PORT, LINK_VERSION, decodeFrameMessage, parseClientMessage, type BridgeStats, type ServerMessage } from "@ledlay/link";
+import {
+  DEFAULT_BRIDGE_PORT,
+  LINK_VERSION,
+  decodeFrameMessage,
+  parseClientMessage,
+  type BridgeStats,
+  type ServerMessage,
+} from "@ledlay/link";
 import { FrameSender, type UdpTransport } from "@ledlay/targets";
 import { WebSocketServer, type WebSocket } from "ws";
 import { handleRpc, type RpcDeps } from "./rpc";
@@ -36,7 +43,9 @@ export function isAllowedOrigin(origin: string | undefined, extra: readonly stri
   if (extra.includes(origin)) return true;
   try {
     const u = new URL(origin);
-    return ["localhost", "127.0.0.1", "[::1]", "tauri.localhost"].includes(u.hostname) || u.protocol === "tauri:";
+    return (
+      ["localhost", "127.0.0.1", "[::1]", "tauri.localhost"].includes(u.hostname) || u.protocol === "tauri:"
+    );
   } catch {
     return false;
   }
@@ -55,7 +64,8 @@ export async function startBridge(opts: BridgeOptions): Promise<BridgeServer> {
   });
   const wss = new WebSocketServer({
     server: http,
-    verifyClient: (info: { origin: string; req: IncomingMessage }) => isAllowedOrigin(info.origin || undefined, opts.allowedOrigins),
+    verifyClient: (info: { origin: string; req: IncomingMessage }) =>
+      isAllowedOrigin(info.origin || undefined, opts.allowedOrigins),
   });
 
   // Per-connection state: controller list the client refers to by index, and the size of
@@ -70,7 +80,11 @@ export async function startBridge(opts: BridgeOptions): Promise<BridgeServer> {
     lastFrame.set(ws, new Map());
     log("studio connected");
     const send = (m: ServerMessage) => ws.readyState === ws.OPEN && ws.send(JSON.stringify(m));
-    send({ type: "welcome", version: LINK_VERSION, bridge: { name: "ledlay-bridge", version: BRIDGE_VERSION } });
+    send({
+      type: "welcome",
+      version: LINK_VERSION,
+      bridge: { name: "ledlay-bridge", version: BRIDGE_VERSION },
+    });
 
     ws.on("message", async (raw, isBinary) => {
       if (isBinary) {
@@ -80,7 +94,9 @@ export async function startBridge(opts: BridgeOptions): Promise<BridgeServer> {
           const c = sessions.get(ws)?.[frame.controllerIndex];
           if (!c) return;
           framesThisWindow++;
-          lastFrame.get(ws)?.set(frame.controllerIndex, { length: frame.data.length, cpp: frame.channelsPerPixel });
+          lastFrame
+            .get(ws)
+            ?.set(frame.controllerIndex, { length: frame.data.length, cpp: frame.channelsPerPixel });
           await sender.send(c, frame.data, frame.channelsPerPixel);
         } catch (e) {
           send({ type: "error", message: (e as Error).message });
@@ -101,7 +117,9 @@ export async function startBridge(opts: BridgeOptions): Promise<BridgeServer> {
         case "setControllers":
           sessions.set(ws, msg.controllers);
           lastFrame.get(ws)?.clear();
-          log(`controllers: ${msg.controllers.map((c) => `${c.name}@${c.host || "?"}/${c.protocol}`).join(", ") || "(none)"}`);
+          log(
+            `controllers: ${msg.controllers.map((c) => `${c.name}@${c.host || "?"}/${c.protocol}`).join(", ") || "(none)"}`,
+          );
           break;
         case "blackout": {
           const list = sessions.get(ws) ?? [];

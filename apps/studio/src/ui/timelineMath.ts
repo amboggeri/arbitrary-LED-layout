@@ -26,3 +26,9 @@ export function formatTime(t: number): string {
   const s = t - m * 60;
   return `${m}:${s.toFixed(2).padStart(5, "0")}`;
 }
+
+/** Snap down to the grid (used when inserting at the playhead so the clip covers it). */
+export function snapDown(t: number, step: number): number {
+  if (step <= 0) return t;
+  return +(Math.floor(t / step + 1e-9) * step).toFixed(6);
+}

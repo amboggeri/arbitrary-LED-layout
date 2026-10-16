@@ -47,12 +47,26 @@ describe("validatePatch", () => {
     b.patch = { controllerId: "c1", output: 0, startPixel: 5 };
     const over = createFixture({ id: "o", name: "Over", geometry: { kind: "strip", count: 6, spacing: 1 } });
     over.patch = { controllerId: "c1", output: 1, startPixel: 0 };
-    const ghost = createFixture({ id: "g", name: "Ghost", geometry: { kind: "strip", count: 1, spacing: 1 } });
+    const ghost = createFixture({
+      id: "g",
+      name: "Ghost",
+      geometry: { kind: "strip", count: 1, spacing: 1 },
+    });
     ghost.patch = { controllerId: "nope", output: 0, startPixel: 0 };
-    const badOut = createFixture({ id: "bo", name: "BadOut", geometry: { kind: "strip", count: 1, spacing: 1 } });
+    const badOut = createFixture({
+      id: "bo",
+      name: "BadOut",
+      geometry: { kind: "strip", count: 1, spacing: 1 },
+    });
     badOut.patch = { controllerId: "c1", output: 7, startPixel: 0 };
-    const loose = createFixture({ id: "l", name: "Loose", geometry: { kind: "strip", count: 1, spacing: 1 } });
-    const issues = validatePatch(createProject({ controllers: [c], fixtures: [a, b, over, ghost, badOut, loose] }));
+    const loose = createFixture({
+      id: "l",
+      name: "Loose",
+      geometry: { kind: "strip", count: 1, spacing: 1 },
+    });
+    const issues = validatePatch(
+      createProject({ controllers: [c], fixtures: [a, b, over, ghost, badOut, loose] }),
+    );
     const msgs = issues.map((i) => `${i.severity}: ${i.message}`);
     expect(msgs).toContain("warning: B overlaps A on Ctl output 1");
     expect(msgs.some((m) => m.startsWith("error: Over: needs pixels 0-5"))).toBe(true);
@@ -63,11 +77,19 @@ describe("validatePatch", () => {
 
   it("flags duplicate ids, missing host, empty controllers and universe overflow", () => {
     const c = createController({ id: "c", name: "Empty", host: "" });
-    const big = createController({ id: "big", name: "Big", host: "x", protocol: "artnet", universeStart: 32767 });
+    const big = createController({
+      id: "big",
+      name: "Big",
+      host: "x",
+      protocol: "artnet",
+      universeStart: 32767,
+    });
     const f1 = createFixture({ id: "dup", name: "1", geometry: { kind: "strip", count: 400, spacing: 1 } });
     f1.patch = { controllerId: "big", output: 0, startPixel: 0 };
     const f2 = createFixture({ id: "dup", name: "2", geometry: { kind: "strip", count: 1, spacing: 1 } });
-    const msgs = validatePatch(createProject({ controllers: [c, big], fixtures: [f1, f2] })).map((i) => i.message);
+    const msgs = validatePatch(createProject({ controllers: [c, big], fixtures: [f1, f2] })).map(
+      (i) => i.message,
+    );
     expect(msgs).toContain("Duplicate fixture id dup");
     expect(msgs).toContain("Empty: no host/IP set");
     expect(msgs).toContain("Empty: no fixtures patched");

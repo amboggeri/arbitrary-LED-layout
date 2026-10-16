@@ -1,32 +1,13 @@
 /** React host for Viewport3D: wires store state and runtime frames into the imperative view. */
 import { useEffect, useRef, useState } from "react";
-import { applyMatrix, composeMatrix, type Vec3 } from "@ledlay/core";
+import { applyMatrix, composeMatrix } from "@ledlay/core";
 import * as cmd from "@ledlay/editor";
 import { useRuntime } from "../runtime/context";
 import { studio, useStudio } from "../state/store";
+import { worldToLocal } from "./coords";
 import { Viewport3D, type GizmoMode } from "./Viewport3D";
 
-/** Convert a world point into the local space of a fixture transform. */
-function worldToLocal(t: { position: Vec3; rotation: Vec3; scale: Vec3 }, p: Vec3): Vec3 {
-  // Invert M = T * R * S by solving with the inverse computed from the column-major matrix.
-  const m = composeMatrix(t);
-  const a = [m[0]!, m[1]!, m[2]!, m[4]!, m[5]!, m[6]!, m[8]!, m[9]!, m[10]!];
-  const det = a[0]! * (a[4]! * a[8]! - a[5]! * a[7]!) - a[3]! * (a[1]! * a[8]! - a[2]! * a[7]!) + a[6]! * (a[1]! * a[5]! - a[2]! * a[4]!);
-  if (Math.abs(det) < 1e-12) return p;
-  const x = p[0] - m[12]!,
-    y = p[1] - m[13]!,
-    z = p[2] - m[14]!;
-  // Cramer's rule on columns (c0, c1, c2) * (u, v, w) = (x, y, z)
-  const c0: Vec3 = [a[0]!, a[1]!, a[2]!],
-    c1: Vec3 = [a[3]!, a[4]!, a[5]!],
-    c2: Vec3 = [a[6]!, a[7]!, a[8]!];
-  const d3 = (u: Vec3, v: Vec3, w: Vec3) =>
-    u[0] * (v[1] * w[2] - v[2] * w[1]) - v[0] * (u[1] * w[2] - u[2] * w[1]) + w[0] * (u[1] * v[2] - u[2] * v[1]);
-  const r: Vec3 = [x, y, z];
-  return [d3(r, c1, c2) / det, d3(c0, r, c2) / det, d3(c0, c1, r) / det];
-}
 
-export { worldToLocal };
 
 export function ViewportView() {
   const host = useRef<HTMLDivElement>(null);
@@ -63,7 +44,10 @@ export function ViewportView() {
         onDrawPoint(world) {
           const s = studio.getState();
           const sel = s.selection;
-          const f = sel?.kind === "fixture" && sel.ids.length === 1 ? s.project.fixtures.find((x) => x.id === sel.ids[0]) : undefined;
+          const f =
+            sel?.kind === "fixture" && sel.ids.length === 1
+              ? s.project.fixtures.find((x) => x.id === sel.ids[0])
+              : undefined;
           if (f && f.geometry.kind === "polyline") {
             const g = f.geometry;
             const local = worldToLocal(f.transform, world);
@@ -113,8 +97,14 @@ export function ViewportView() {
 
   useEffect(() => {
     const sel = selection;
-    const f = sel?.kind === "fixture" && sel.ids.length === 1 ? project.fixtures.find((x) => x.id === sel.ids[0]) : undefined;
-    const preview = f && f.geometry.kind === "polyline" ? f.geometry.points.map((p) => applyMatrix(composeMatrix(f.transform), p)) : [];
+    const f =
+      sel?.kind === "fixture" && sel.ids.length === 1
+        ? project.fixtures.find((x) => x.id === sel.ids[0])
+        : undefined;
+    const preview =
+      f && f.geometry.kind === "polyline"
+        ? f.geometry.points.map((p) => applyMatrix(composeMatrix(f.transform), p))
+        : [];
     view.current?.setDrawing(tool === "draw", preview);
   }, [tool, selection, project.fixtures]);
 
@@ -129,7 +119,11 @@ export function ViewportView() {
         <button className="ghost" title="Frame all (F)" onClick={() => view.current?.frameAll()}>
           ⤢ Frame
         </button>
-        {tool === "draw" && <span className="hint">Click on a model or the floor to add path points to the selected path (or start a new one).</span>}
+        {tool === "draw" && (
+          <span className="hint">
+            Click on a model or the floor to add path points to the selected path (or start a new one).
+          </span>
+        )}
       </div>
     </div>
   );

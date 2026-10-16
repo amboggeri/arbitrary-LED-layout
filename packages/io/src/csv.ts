@@ -44,7 +44,8 @@ export function parsePointsCsv(text: string, opts: CsvImportOptions = {}): Point
   if (head.some((h) => h !== "" && Number.isNaN(Number(h)))) {
     const find = (...names: string[]) => head.findIndex((h) => names.includes(h));
     col = { i: find("index", "led", "id", "i", "led_id"), x: find("x"), y: find("y"), z: find("z") };
-    if (col.x < 0 || col.y < 0) throw new Error(`CSV header must include x and y columns (got: ${head.join(", ")})`);
+    if (col.x < 0 || col.y < 0)
+      throw new Error(`CSV header must include x and y columns (got: ${head.join(", ")})`);
     start = 1;
   } else if (head.length >= 4) {
     col = { i: 0, x: 1, y: 2, z: 3 };
@@ -100,7 +101,10 @@ export function parsePointsCsv(text: string, opts: CsvImportOptions = {}): Point
       points.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]);
     } else points.push([...(a ?? b)!] as Vec3);
   }
-  if (missing.length) warnings.push(`${missing.length} LED(s) missing from the file (${gaps === "drop" ? "dropped" : "interpolated"})`);
+  if (missing.length)
+    warnings.push(
+      `${missing.length} LED(s) missing from the file (${gaps === "drop" ? "dropped" : "interpolated"})`,
+    );
   return { points, missing, warnings };
 }
 

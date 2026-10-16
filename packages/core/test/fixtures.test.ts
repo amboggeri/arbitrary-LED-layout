@@ -94,7 +94,16 @@ describe("matrix wiring", () => {
     for (const wiring of ["progressive", "serpentine"] as const)
       for (const start of ["bottom-left", "bottom-right", "top-left", "top-right"] as const)
         for (const vertical of [false, true]) {
-          const pts = matrixPoints({ kind: "matrix", cols: 4, rows: 3, spacingX: 1, spacingY: 1, wiring, start, vertical });
+          const pts = matrixPoints({
+            kind: "matrix",
+            cols: 4,
+            rows: 3,
+            spacingX: 1,
+            spacingY: 1,
+            wiring,
+            start,
+            vertical,
+          });
           expect(new Set(pts.map((p) => `${p[0]},${p[1]}`)).size).toBe(12);
         }
   });
@@ -180,11 +189,44 @@ describe("ledCount matches generated points for every kind", () => {
   const geoms: FixtureGeometry[] = [
     { kind: "strip", count: 7, spacing: 1 },
     { kind: "ring", count: 12, radius: 3, startAngle: 0, sweep: 270 },
-    { kind: "matrix", cols: 5, rows: 4, spacingX: 1, spacingY: 2, wiring: "serpentine", start: "top-left", vertical: false },
+    {
+      kind: "matrix",
+      cols: 5,
+      rows: 4,
+      spacingX: 1,
+      spacingY: 2,
+      wiring: "serpentine",
+      start: "top-left",
+      vertical: false,
+    },
     { kind: "cube", nx: 2, ny: 3, nz: 4, spacing: 1, wiring: "serpentine" },
-    { kind: "polyline", points: [[0, 0, 0], [3.3, 0, 0], [3.3, 7.1, 2]], spacing: 0.7, closed: false },
-    { kind: "polyline", points: [[0, 0, 0], [3, 0, 0], [3, 3, 0]], spacing: 0.5, closed: true },
-    { kind: "points", points: [[1, 2, 3], [4, 5, 6]] },
+    {
+      kind: "polyline",
+      points: [
+        [0, 0, 0],
+        [3.3, 0, 0],
+        [3.3, 7.1, 2],
+      ],
+      spacing: 0.7,
+      closed: false,
+    },
+    {
+      kind: "polyline",
+      points: [
+        [0, 0, 0],
+        [3, 0, 0],
+        [3, 3, 0],
+      ],
+      spacing: 0.5,
+      closed: true,
+    },
+    {
+      kind: "points",
+      points: [
+        [1, 2, 3],
+        [4, 5, 6],
+      ],
+    },
   ];
   for (const g of geoms) {
     it(g.kind, () => expect(localPoints(g).length).toBe(ledCount(g)));

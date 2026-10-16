@@ -15,7 +15,15 @@ export function Field({ label, children, hint }: { label: string; children: Reac
   );
 }
 
-export function Section({ title, children, actions }: { title: string; children: ReactNode; actions?: ReactNode }) {
+export function Section({
+  title,
+  children,
+  actions,
+}: {
+  title: string;
+  children: ReactNode;
+  actions?: ReactNode;
+}) {
   return (
     <section className="section">
       <header>
@@ -137,14 +145,29 @@ export function Vec3Input({
     <div className="vec3">
       {(["x", "y", "z"] as const).map((axis, i) => (
         <span key={axis} className={`axis axis-${axis}`}>
-          <NumberInput value={value[i]!} step={step} ariaLabel={`${ariaLabel} ${axis}`} onChange={(v) => set(i, v)} />
+          <NumberInput
+            value={value[i]!}
+            step={step}
+            ariaLabel={`${ariaLabel} ${axis}`}
+            onChange={(v) => set(i, v)}
+          />
         </span>
       ))}
     </div>
   );
 }
 
-export function TextInput({ value, onChange, ariaLabel, placeholder }: { value: string; onChange: (v: string) => void; ariaLabel?: string; placeholder?: string }) {
+export function TextInput({
+  value,
+  onChange,
+  ariaLabel,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  ariaLabel?: string;
+  placeholder?: string;
+}) {
   const [text, setText] = useState(value);
   useEffect(() => setText(value), [value]);
   return (
@@ -160,7 +183,17 @@ export function TextInput({ value, onChange, ariaLabel, placeholder }: { value: 
   );
 }
 
-export function ColorInput({ value, onChange, onCommit, ariaLabel }: { value: string; onChange: (v: string) => void; onCommit?: () => void; ariaLabel?: string }) {
+export function ColorInput({
+  value,
+  onChange,
+  onCommit,
+  ariaLabel,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onCommit?: () => void;
+  ariaLabel?: string;
+}) {
   return (
     <input
       type="color"
@@ -195,7 +228,15 @@ export function Select<T extends string>({
   );
 }
 
-export function Checkbox({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
+export function Checkbox({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+}) {
   return (
     <label className="checkbox">
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
@@ -204,7 +245,15 @@ export function Checkbox({ checked, onChange, label }: { checked: boolean; onCha
   );
 }
 
-export function TagsInput({ value, onChange, ariaLabel }: { value: readonly string[]; onChange: (v: string[]) => void; ariaLabel?: string }) {
+export function TagsInput({
+  value,
+  onChange,
+  ariaLabel,
+}: {
+  value: readonly string[];
+  onChange: (v: string[]) => void;
+  ariaLabel?: string;
+}) {
   return (
     <TextInput
       ariaLabel={ariaLabel}

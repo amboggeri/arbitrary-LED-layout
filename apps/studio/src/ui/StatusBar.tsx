@@ -14,7 +14,12 @@ export function StatusBar() {
       {status === "open" && stats && (
         <span>
           bridge: {stats.fps.toFixed(0)} fps · {stats.packets} pkts · {(stats.bytes / 1e6).toFixed(1)} MB
-          {stats.errors > 0 && <span className="warn"> · {stats.errors} errors ({stats.lastError})</span>}
+          {stats.errors > 0 && (
+            <span className="warn">
+              {" "}
+              · {stats.errors} errors ({stats.lastError})
+            </span>
+          )}
         </span>
       )}
       <span className="spacer" />

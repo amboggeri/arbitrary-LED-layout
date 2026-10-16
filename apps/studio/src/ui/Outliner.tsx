@@ -50,7 +50,10 @@ export function Outliner() {
                 } else select({ kind: "fixture", ids: [f.id] });
               }}
             >
-              <span className={`dot ${f.patch ? "patched" : "unpatched"}`} title={f.patch ? "Patched" : "Not patched"} />
+              <span
+                className={`dot ${f.patch ? "patched" : "unpatched"}`}
+                title={f.patch ? "Patched" : "Not patched"}
+              />
               <span className="name">{f.name}</span>
               <span className="meta">{ledCount(f.geometry)}</span>
             </li>
@@ -66,7 +69,10 @@ export function Outliner() {
             className="ghost add"
             onClick={() => {
               const id = `ctl_${Date.now().toString(36)}`;
-              apply((p) => cmd.addController(p, { id, name: `WLED ${p.controllers.length + 1}` }), "Add controller");
+              apply(
+                (p) => cmd.addController(p, { id, name: `WLED ${p.controllers.length + 1}` }),
+                "Add controller",
+              );
               select({ kind: "controller", id });
             }}
           >
@@ -75,13 +81,19 @@ export function Outliner() {
         </header>
         <ul>
           {project.controllers.map((c) => (
-            <li key={c.id} className={isSel("controller", c.id) ? "selected" : ""} onClick={() => select({ kind: "controller", id: c.id })}>
+            <li
+              key={c.id}
+              className={isSel("controller", c.id) ? "selected" : ""}
+              onClick={() => select({ kind: "controller", id: c.id })}
+            >
               <span className={`dot ${c.enabled && c.host ? "patched" : "unpatched"}`} />
               <span className="name">{c.name}</span>
               <span className="meta">{c.host || "no host"}</span>
             </li>
           ))}
-          {project.controllers.length === 0 && <li className="empty">Add a controller to send data to hardware.</li>}
+          {project.controllers.length === 0 && (
+            <li className="empty">Add a controller to send data to hardware.</li>
+          )}
         </ul>
       </section>
 
@@ -91,12 +103,18 @@ export function Outliner() {
         </header>
         <ul>
           {project.models.map((m) => (
-            <li key={m.id} className={isSel("model", m.id) ? "selected" : ""} onClick={() => select({ kind: "model", id: m.id })}>
+            <li
+              key={m.id}
+              className={isSel("model", m.id) ? "selected" : ""}
+              onClick={() => select({ kind: "model", id: m.id })}
+            >
               <span className="name">{m.name}</span>
               <span className="meta">{m.format}</span>
             </li>
           ))}
-          {project.models.length === 0 && <li className="empty">Import a 3D model (File ▸ Import model) to place LEDs on it.</li>}
+          {project.models.length === 0 && (
+            <li className="empty">Import a 3D model (File ▸ Import model) to place LEDs on it.</li>
+          )}
         </ul>
       </section>
     </nav>

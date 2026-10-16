@@ -20,7 +20,8 @@ export function App() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const frameAll = () => (window as unknown as { __ledlayViewport?: { frameAll(): void } }).__ledlayViewport?.frameAll();
+      const frameAll = () =>
+        (window as unknown as { __ledlayViewport?: { frameAll(): void } }).__ledlayViewport?.frameAll();
       if (handleShortcut(e, studio, runtime, frameAll)) e.preventDefault();
     };
     window.addEventListener("keydown", onKey);
@@ -51,7 +52,13 @@ export function App() {
           <div className="bottom">
             <div className="tabs" role="tablist">
               {(["layers", "timeline", "issues"] as const).map((t) => (
-                <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? "active" : ""} onClick={() => setTab(t)}>
+                <button
+                  key={t}
+                  role="tab"
+                  aria-selected={tab === t}
+                  className={tab === t ? "active" : ""}
+                  onClick={() => setTab(t)}
+                >
                   {t[0]!.toUpperCase() + t.slice(1)}
                 </button>
               ))}

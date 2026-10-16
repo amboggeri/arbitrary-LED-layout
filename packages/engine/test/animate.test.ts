@@ -56,11 +56,32 @@ describe("keyframes", () => {
     ];
     expect(evaluateKeyframes(bools, 0.99)).toBe(true);
     expect(evaluateKeyframes(bools, 1)).toBe(false);
-    expect(evaluateKeyframes([{ t: 0, v: "x", ease: "linear" }, { t: 0, v: "y", ease: "linear" }], 0.5)).toBe("y");
+    expect(
+      evaluateKeyframes(
+        [
+          { t: 0, v: "x", ease: "linear" },
+          { t: 0, v: "y", ease: "linear" },
+        ],
+        0.5,
+      ),
+    ).toBe("y");
   });
   it("evaluates static and animated params", () => {
     expect(evaluateParam(5, 100)).toBe(5);
-    expect(evaluateParams({ a: 1, b: { keyframes: [{ t: 0, v: 0, ease: "linear" }, { t: 1, v: 1, ease: "linear" }] } }, 0.25)).toEqual({
+    expect(
+      evaluateParams(
+        {
+          a: 1,
+          b: {
+            keyframes: [
+              { t: 0, v: 0, ease: "linear" },
+              { t: 1, v: 1, ease: "linear" },
+            ],
+          },
+        },
+        0.25,
+      ),
+    ).toEqual({
       a: 1,
       b: 0.25,
     });

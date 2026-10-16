@@ -59,13 +59,23 @@ function FileMenu() {
           {item("Load demo", () => studio.getState().loadProject(demoProject()))}
           <hr />
           {item("Import 3D model (glb/gltf/obj/stl)…", () => actions.pickAndImportModel(studio))}
-          {item("Import LED points (CSV / Marimapper / xLights .xmodel)…", () => actions.pickAndImportPoints(studio))}
+          {item("Import LED points (CSV / Marimapper / xLights .xmodel)…", () =>
+            actions.pickAndImportPoints(studio),
+          )}
           <hr />
           {item("Export LED points CSV", () =>
-            downloadBlob(actions.exportPointsCsv(project, selectedIds), `${safeFileName(project.name)}-points.csv`, "text/csv"),
+            downloadBlob(
+              actions.exportPointsCsv(project, selectedIds),
+              `${safeFileName(project.name)}-points.csv`,
+              "text/csv",
+            ),
           )}
           {item("Export xLights model (.xmodel)", () =>
-            downloadBlob(actions.exportXModel(project, selectedIds), `${safeFileName(project.name)}.xmodel`, "application/xml"),
+            downloadBlob(
+              actions.exportXModel(project, selectedIds),
+              `${safeFileName(project.name)}.xmodel`,
+              "application/xml",
+            ),
           )}
           {project.controllers.map((c) => (
             <span key={c.id}>
@@ -92,10 +102,20 @@ export function Toolbar() {
       </div>
       <FileMenu />
       <div className="group">
-        <button aria-label="undo" title={s.undoLabel ? `Undo ${s.undoLabel} (Ctrl+Z)` : "Undo"} disabled={!s.canUndo} onClick={s.undo}>
+        <button
+          aria-label="undo"
+          title={s.undoLabel ? `Undo ${s.undoLabel} (Ctrl+Z)` : "Undo"}
+          disabled={!s.canUndo}
+          onClick={s.undo}
+        >
           ↶
         </button>
-        <button aria-label="redo" title={s.redoLabel ? `Redo ${s.redoLabel} (Ctrl+Shift+Z)` : "Redo"} disabled={!s.canRedo} onClick={s.redo}>
+        <button
+          aria-label="redo"
+          title={s.redoLabel ? `Redo ${s.redoLabel} (Ctrl+Shift+Z)` : "Redo"}
+          disabled={!s.canRedo}
+          onClick={s.redo}
+        >
           ↷
         </button>
       </div>
@@ -115,7 +135,12 @@ export function Toolbar() {
         ))}
       </div>
       <div className="group transport">
-        <button aria-label={s.playing ? "pause" : "play"} className="play" onClick={() => s.setPlaying(!s.playing)} title="Play/Pause (Space)">
+        <button
+          aria-label={s.playing ? "pause" : "play"}
+          className="play"
+          onClick={() => s.setPlaying(!s.playing)}
+          title="Play/Pause (Space)"
+        >
           {s.playing ? "❚❚" : "▶"}
         </button>
         <button
@@ -139,8 +164,16 @@ export function Toolbar() {
         </span>
       </div>
       <div className="group output">
-        <label className={`toggle ${s.output.enabled ? "on" : ""}`} title="Send frames to hardware through the bridge">
-          <input type="checkbox" aria-label="output enabled" checked={s.output.enabled} onChange={(e) => s.setOutput({ enabled: e.target.checked })} />
+        <label
+          className={`toggle ${s.output.enabled ? "on" : ""}`}
+          title="Send frames to hardware through the bridge"
+        >
+          <input
+            type="checkbox"
+            aria-label="output enabled"
+            checked={s.output.enabled}
+            onChange={(e) => s.setOutput({ enabled: e.target.checked })}
+          />
           Output
         </label>
         <input
@@ -155,7 +188,11 @@ export function Toolbar() {
         />
       </div>
       <div className="group bridge">
-        <span className={`status ${s.bridge.status}`} title={`Bridge ${s.bridge.url}`} data-testid="bridge-status">
+        <span
+          className={`status ${s.bridge.status}`}
+          title={`Bridge ${s.bridge.url}`}
+          data-testid="bridge-status"
+        >
           ● {s.bridge.status === "open" ? "bridge" : s.bridge.status}
         </span>
         {s.bridge.status === "closed" ? (

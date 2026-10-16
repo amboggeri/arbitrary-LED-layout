@@ -1,4 +1,4 @@
-import { z } from "zod";
+import type { z } from "zod";
 import { newId } from "./ids";
 import {
   PROJECT_FORMAT_VERSION,

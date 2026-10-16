@@ -5,7 +5,14 @@
  */
 import { channelsFor, type Controller, type Project } from "@ledlay/core";
 import { createDefaultRegistry, type EffectRegistry } from "@ledlay/effects";
-import { compileLayout, ControllerEncoder, Player, Renderer, type Clock, type CompiledLayout } from "@ledlay/engine";
+import {
+  compileLayout,
+  ControllerEncoder,
+  Player,
+  Renderer,
+  type Clock,
+  type CompiledLayout,
+} from "@ledlay/engine";
 import { BridgeClient, type BridgeStats, type LinkStatus, type RpcMethod } from "@ledlay/link";
 import type { StudioStore } from "../state/store";
 
@@ -28,7 +35,10 @@ export interface BridgeLike {
 export interface RuntimeOptions {
   registry?: EffectRegistry;
   clock?: Clock;
-  createBridge?: (url: string, hooks: { onStatus(s: LinkStatus): void; onStats(s: BridgeStats): void }) => BridgeLike;
+  createBridge?: (
+    url: string,
+    hooks: { onStatus(s: LinkStatus): void; onStats(s: BridgeStats): void },
+  ) => BridgeLike;
   /** How often store.time is refreshed while playing (ms). */
   uiIntervalMs?: number;
 }
@@ -82,10 +92,14 @@ export class StudioRuntime {
     if (this.unsubscribe) return;
     this.unsubscribe = this.store.subscribe((s, prev) => {
       if (s.project !== prev.project) this.onProjectChange(s.project, prev.project);
-      if (s.playing !== prev.playing) (s.playing ? this.player.play() : this.player.pause());
+      if (s.playing !== prev.playing) {
+        if (s.playing) this.player.play();
+        else this.player.pause();
+      }
       if (s.output.enabled !== prev.output.enabled && !s.output.enabled) this.bridge?.blackout();
       if (s.bridge.url !== prev.bridge.url && this.bridge) this.connectBridge();
-      if (s.output.masterBrightness !== prev.output.masterBrightness && !s.playing) this.renderAt(this.player.time);
+      if (s.output.masterBrightness !== prev.output.masterBrightness && !s.playing)
+        this.renderAt(this.player.time);
     });
     this.renderAt(0);
   }
@@ -119,7 +133,8 @@ export class StudioRuntime {
     const hooks = {
       onStatus: (status: LinkStatus) => {
         this.store.getState().setBridge({ status });
-        if (status === "open") this.bridge?.setControllers(this.compiledLayout.controllers.map((c) => c.controller));
+        if (status === "open")
+          this.bridge?.setControllers(this.compiledLayout.controllers.map((c) => c.controller));
       },
       onStats: (stats: BridgeStats) => this.store.getState().setBridge({ stats }),
     };
@@ -137,7 +152,8 @@ export class StudioRuntime {
   }
 
   rpc<T = unknown>(method: RpcMethod, params: Record<string, unknown> = {}): Promise<T> {
-    if (!this.bridge) return Promise.reject(new Error("Not connected to a bridge. Start it with `pnpm bridge`."));
+    if (!this.bridge)
+      return Promise.reject(new Error("Not connected to a bridge. Start it with `pnpm bridge`."));
     return this.bridge.rpc<T>(method, params);
   }
 
@@ -160,7 +176,10 @@ export class StudioRuntime {
       for (const s of this.sinks) s.setLayout(this.compiledLayout, next);
     }
     if (next.fps !== prev.fps) this.player.fps = next.fps;
-    const live = [...next.layers.map((l) => l.id), ...next.timeline.tracks.flatMap((t) => t.clips.map((c) => c.layer.id))];
+    const live = [
+      ...next.layers.map((l) => l.id),
+      ...next.timeline.tracks.flatMap((t) => t.clips.map((c) => c.layer.id)),
+    ];
     this.renderer.prune(live);
     if (!this.store.getState().playing) this.renderAt(this.player.time);
   }

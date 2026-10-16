@@ -1,8 +1,20 @@
-import { createController, createFixture, createLayer, createProject, type ControllerInput, type Project } from "@ledlay/core";
+import {
+  createController,
+  createFixture,
+  createLayer,
+  createProject,
+  type ControllerInput,
+  type Project,
+} from "@ledlay/core";
 
 /** Two 4-pixel strips on one controller; strip B starts at pixel 4. */
 export function twoStrips(ctl: Partial<ControllerInput> = {}): Project {
-  const a = createFixture({ id: "a", name: "A", geometry: { kind: "strip", count: 4, spacing: 1 }, tags: ["left"] });
+  const a = createFixture({
+    id: "a",
+    name: "A",
+    geometry: { kind: "strip", count: 4, spacing: 1 },
+    tags: ["left"],
+  });
   const b = createFixture({
     id: "b",
     name: "B",

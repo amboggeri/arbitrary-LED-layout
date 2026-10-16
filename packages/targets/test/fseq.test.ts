@@ -51,7 +51,13 @@ describe("FSEQ v2", () => {
     const v1 = buf.slice();
     v1[7] = 1;
     expect(() => readFseqHeader(v1)).toThrow(/major version/);
-    expect(() => new FseqWriter({ channelCount: 1, stepTimeMs: 50, variableHeaders: [{ code: "x", value: "" }] }).finish()).toThrow();
+    expect(() =>
+      new FseqWriter({
+        channelCount: 1,
+        stepTimeMs: 50,
+        variableHeaders: [{ code: "x", value: "" }],
+      }).finish(),
+    ).toThrow();
   });
 });
 
@@ -89,7 +95,19 @@ describe("bakeFseq", () => {
     p.playback = "timeline";
     p.timeline = timelineSchema.parse({
       duration: 2,
-      tracks: [{ id: "t", clips: [{ id: "k", start: 1, duration: 1, layer: createLayer({ effectId: "solid", params: { color: "#00ff00" } }) }] }],
+      tracks: [
+        {
+          id: "t",
+          clips: [
+            {
+              id: "k",
+              start: 1,
+              duration: 1,
+              layer: createLayer({ effectId: "solid", params: { color: "#00ff00" } }),
+            },
+          ],
+        },
+      ],
     });
     const buf = bakeFseq(p, createDefaultRegistry(), { controllerId: "c" });
     const h = readFseqHeader(buf);

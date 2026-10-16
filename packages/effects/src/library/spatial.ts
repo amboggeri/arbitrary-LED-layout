@@ -18,7 +18,8 @@ export const rainbow = defineEffect({
     const [dx, dy, dz] = normalizeDir(params.direction);
     const c: RGB = [0, 0, 0];
     for (let i = 0; i < space.count; i++) {
-      const d = space.centered[i * 3]! * dx + space.centered[i * 3 + 1]! * dy + space.centered[i * 3 + 2]! * dz;
+      const d =
+        space.centered[i * 3]! * dx + space.centered[i * 3 + 1]! * dy + space.centered[i * 3 + 2]! * dz;
       hsv(d * 0.5 * params.scale - time * params.speed, params.saturation, 1, c);
       setPixel(out, i, c[0], c[1], c[2]);
     }
@@ -49,7 +50,10 @@ export const planeSweep = defineEffect({
       let mn = Infinity,
         mx = -Infinity;
       for (let i = 0; i < space.count; i++) {
-        const d = space.centered[i * 3]! * dir[0] + space.centered[i * 3 + 1]! * dir[1] + space.centered[i * 3 + 2]! * dir[2];
+        const d =
+          space.centered[i * 3]! * dir[0] +
+          space.centered[i * 3 + 1]! * dir[1] +
+          space.centered[i * 3 + 2]! * dir[2];
         if (d < mn) mn = d;
         if (d > mx) mx = d;
       }
@@ -64,7 +68,10 @@ export const planeSweep = defineEffect({
     const fg = params.color,
       bg = params.background;
     for (let i = 0; i < space.count; i++) {
-      const d = space.centered[i * 3]! * dir[0] + space.centered[i * 3 + 1]! * dir[1] + space.centered[i * 3 + 2]! * dir[2];
+      const d =
+        space.centered[i * 3]! * dir[0] +
+        space.centered[i * 3 + 1]! * dir[1] +
+        space.centered[i * 3 + 2]! * dir[2];
       const dist = Math.abs(d - pos);
       const k = dist <= hard ? 1 : 1 - smoothstep(hard, w, dist);
       setPixel(out, i, bg[0] + (fg[0] - bg[0]) * k, bg[1] + (fg[1] - bg[1]) * k, bg[2] + (fg[2] - bg[2]) * k);
@@ -118,7 +125,15 @@ export const orb = defineEffect({
     position: { type: "vec3", label: "Position (−1..1)", default: [0, 0, 0], min: -1.5, max: 1.5 },
     radius: { type: "number", label: "Radius", default: 0.35, min: 0.01, max: 3, step: 0.01 },
     orbitRadius: { type: "number", label: "Orbit radius", default: 0.6, min: 0, max: 2, step: 0.01 },
-    orbitSpeed: { type: "number", label: "Orbit speed", default: 0.25, min: -5, max: 5, step: 0.01, unit: "rev/s" },
+    orbitSpeed: {
+      type: "number",
+      label: "Orbit speed",
+      default: 0.25,
+      min: -5,
+      max: 5,
+      step: 0.01,
+      unit: "rev/s",
+    },
     orbitAxis: {
       type: "select",
       label: "Orbit around",
@@ -174,7 +189,14 @@ export const spiral = defineEffect({
       ],
     },
     arms: { type: "number", label: "Arms", default: 2, min: 1, max: 12, step: 1 },
-    twist: { type: "number", label: "Twist (turns over height)", default: 1.5, min: -10, max: 10, step: 0.05 },
+    twist: {
+      type: "number",
+      label: "Twist (turns over height)",
+      default: 1.5,
+      min: -10,
+      max: 10,
+      step: 0.05,
+    },
     speed: { type: "number", label: "Speed", default: 0.3, min: -5, max: 5, step: 0.01, unit: "rev/s" },
   },
   render({ params, space, time }, out) {
@@ -245,7 +267,12 @@ export const clouds = defineEffect({
       t = time * params.speed;
     const c: RGB = [0, 0, 0];
     for (let i = 0; i < space.count; i++) {
-      const n = fbm3(space.centered[i * 3]! * s + t, space.centered[i * 3 + 1]! * s, space.centered[i * 3 + 2]! * s - t * 0.7, params.octaves);
+      const n = fbm3(
+        space.centered[i * 3]! * s + t,
+        space.centered[i * 3 + 1]! * s,
+        space.centered[i * 3 + 2]! * s - t * 0.7,
+        params.octaves,
+      );
       sampleGradient(params.gradient, 0.5 + (n - 0.5) * params.contrast, c);
       setPixel(out, i, c[0], c[1], c[2]);
     }
@@ -278,7 +305,12 @@ export const fire = defineEffect({
     const c: RGB = [0, 0, 0];
     for (let i = 0; i < space.count; i++) {
       const y = space.unit[i * 3 + 1]!;
-      const n = fbm3(space.centered[i * 3]! * s, y * s - time * params.speed, space.centered[i * 3 + 2]! * s, 3);
+      const n = fbm3(
+        space.centered[i * 3]! * s,
+        y * s - time * params.speed,
+        space.centered[i * 3 + 2]! * s,
+        3,
+      );
       const heat = Math.max(0, n * 1.6 - y / params.height);
       sampleGradient(params.gradient, heat, c);
       setPixel(out, i, c[0], c[1], c[2]);

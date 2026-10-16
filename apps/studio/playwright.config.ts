@@ -1,7 +1,8 @@
 import { existsSync } from "node:fs";
 import { defineConfig } from "@playwright/test";
 
-const executablePath = process.env.PLAYWRIGHT_CHROMIUM_PATH ?? (process.env.CI ? undefined : "/opt/pw-browsers/chromium");
+const executablePath =
+  process.env.PLAYWRIGHT_CHROMIUM_PATH ?? (process.env.CI ? undefined : "/opt/pw-browsers/chromium");
 
 export default defineConfig({
   testDir: "e2e",

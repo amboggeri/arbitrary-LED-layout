@@ -88,7 +88,9 @@ describe("StudioRuntime", () => {
     store.getState().apply((p) => cmd.setLayerParam(p, { layerId: "l" }, "color", "#00ff00"));
     expect(frames.at(-1)!.slice(0, 3)).toEqual([0, 1, 0]);
     // geometry change recompiles and pushes a new layout
-    store.getState().apply((p) => cmd.updateFixture(p, "a", { geometry: { kind: "strip", count: 3, spacing: 1 } }));
+    store
+      .getState()
+      .apply((p) => cmd.updateFixture(p, "a", { geometry: { kind: "strip", count: 3, spacing: 1 } }));
     expect(layouts).toHaveLength(2);
     expect(rt.compiled.space.count).toBe(3);
     expect(frames.at(-1)).toHaveLength(9);
@@ -162,7 +164,14 @@ describe("StudioRuntime", () => {
     rt.start();
     rt.addSink(sink);
     store.getState().apply((p) =>
-      cmd.addModel(p, { name: "m", format: "glb", uri: "", transform: { position: [0, 0, 0], rotation: [0, 0, 0], scale: [1, 1, 1] }, opacity: 1, visible: true }),
+      cmd.addModel(p, {
+        name: "m",
+        format: "glb",
+        uri: "",
+        transform: { position: [0, 0, 0], rotation: [0, 0, 0], scale: [1, 1, 1] },
+        opacity: 1,
+        visible: true,
+      }),
     );
     expect(layouts).toHaveLength(2);
     rt.dispose();

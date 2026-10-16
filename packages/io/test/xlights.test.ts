@@ -14,11 +14,15 @@ describe("parseXModel", () => {
   });
 
   it("parses 3D layers and compressed format", () => {
-    expect(parseXModel(`<custommodel name="c" parm1="1" parm2="1" Depth="2" CustomModel="1|2"/>`).points).toEqual([
+    expect(
+      parseXModel(`<custommodel name="c" parm1="1" parm2="1" Depth="2" CustomModel="1|2"/>`).points,
+    ).toEqual([
       [0, 0, 0],
       [0, 0, 1],
     ]);
-    const c = parseXModel(`<custommodel name="c" parm1="2" parm2="2" CustomModelCompressed="2,0,1;1,1,0;3,0,0,1;bad"/>`);
+    const c = parseXModel(
+      `<custommodel name="c" parm1="2" parm2="2" CustomModelCompressed="2,0,1;1,1,0;3,0,0,1;bad"/>`,
+    );
     expect(c.points).toEqual([
       [0, 0, 0],
       [1, 1, 0],
@@ -50,7 +54,17 @@ describe("toXModel", () => {
   });
 
   it("resolves collisions and writes depth for 3D", () => {
-    const m = parseXModel(toXModel("c", [[0, 0, 0], [0, 0, 0], [0, 0, 10]], 2));
+    const m = parseXModel(
+      toXModel(
+        "c",
+        [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 10],
+        ],
+        2,
+      ),
+    );
     expect(new Set(m.points.map((p) => p.join())).size).toBe(3);
     expect(m.depth).toBe(2);
     expect(parseXModel(toXModel("e", [], 10)).points).toEqual([]);

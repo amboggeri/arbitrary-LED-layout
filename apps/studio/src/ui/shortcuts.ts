@@ -11,7 +11,12 @@ function isTyping(target: EventTarget | null): boolean {
   return el.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName);
 }
 
-export function handleShortcut(e: KeyboardEvent, store: StudioStore, runtime: Pick<StudioRuntime, "seek">, frameAll?: () => void): boolean {
+export function handleShortcut(
+  e: KeyboardEvent,
+  store: StudioStore,
+  runtime: Pick<StudioRuntime, "seek">,
+  frameAll?: () => void,
+): boolean {
   if (isTyping(e.target)) return false;
   const s = store.getState();
   const k = e.key.toLowerCase();

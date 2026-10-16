@@ -18,7 +18,8 @@ export interface FrameMessage {
 }
 
 export function encodeFrameMessage(m: FrameMessage): Uint8Array {
-  if (m.controllerIndex < 0 || m.controllerIndex > 0xffff) throw new RangeError("controller index out of range");
+  if (m.controllerIndex < 0 || m.controllerIndex > 0xffff)
+    throw new RangeError("controller index out of range");
   const out = new Uint8Array(FRAME_HEADER + m.data.length);
   out[0] = FRAME_MAGIC;
   out[1] = LINK_VERSION;
@@ -34,5 +35,9 @@ export function decodeFrameMessage(buf: Uint8Array): FrameMessage {
   if (buf[1] !== LINK_VERSION) throw new Error(`Unsupported frame version ${buf[1]}`);
   const cpp = buf[4];
   if (cpp !== 3 && cpp !== 4) throw new Error(`Bad channels-per-pixel ${cpp}`);
-  return { controllerIndex: (buf[2]! << 8) | buf[3]!, channelsPerPixel: cpp, data: buf.subarray(FRAME_HEADER) };
+  return {
+    controllerIndex: (buf[2]! << 8) | buf[3]!,
+    channelsPerPixel: cpp,
+    data: buf.subarray(FRAME_HEADER),
+  };
 }

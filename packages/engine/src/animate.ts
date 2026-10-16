@@ -1,5 +1,14 @@
 /** Keyframe evaluation for layer parameters. */
-import { isAnimated, lerpColor, parseHex, toHex, type Easing, type Keyframe, type Param, type ParamValue } from "@ledlay/core";
+import {
+  isAnimated,
+  lerpColor,
+  parseHex,
+  toHex,
+  type Easing,
+  type Keyframe,
+  type Param,
+  type ParamValue,
+} from "@ledlay/core";
 
 export function ease(kind: Easing, t: number): number {
   switch (kind) {

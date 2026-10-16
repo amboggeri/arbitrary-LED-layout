@@ -34,7 +34,9 @@ function fakeFetch(responses: Record<string, unknown>, status = 200): { fetch: F
 
 describe("WledClient", () => {
   it("reads info and posts state/config as JSON", async () => {
-    const { fetch, calls } = fakeFetch({ "/json/info": { ver: "0.15.0", name: "Tree", mac: "aa", leds: { count: 100 } } });
+    const { fetch, calls } = fakeFetch({
+      "/json/info": { ver: "0.15.0", name: "Tree", mac: "aa", leds: { count: 100 } },
+    });
     const c = new WledClient("10.0.0.5", fetch);
     expect((await c.getInfo()).leds.count).toBe(100);
     await c.setState({ on: true });
@@ -87,7 +89,12 @@ describe("WLED config generation", () => {
     });
     const a = createFixture({ id: "a", name: "A", geometry: { kind: "strip", count: 30, spacing: 1 } });
     a.patch = { controllerId: "c", output: 0, startPixel: 0 };
-    const b = createFixture({ id: "b", name: "B", geometry: { kind: "strip", count: 10, spacing: 1 }, ledTypeId: "sk6812rgbw" });
+    const b = createFixture({
+      id: "b",
+      name: "B",
+      geometry: { kind: "strip", count: 10, spacing: 1 },
+      ledTypeId: "sk6812rgbw",
+    });
     b.patch = { controllerId: "c", output: 1, startPixel: 0 };
     return createProject({ controllers: [ctl], fixtures: [a, b] });
   }
@@ -111,7 +118,9 @@ describe("WLED config generation", () => {
     expect(patch.if.live).toMatchObject({ en: true, "no-gc": true });
     expect(patch.if.live.dmx).toBeUndefined();
     p.controllers[0]!.protocol = "e131";
-    const e = buildWledConfigPatch(compileLayout(p).controllers[0]!, p.fixtures) as { if: { live: { dmx: { uni: number } } } };
+    const e = buildWledConfigPatch(compileLayout(p).controllers[0]!, p.fixtures) as {
+      if: { live: { dmx: { uni: number } } };
+    };
     expect(e.if.live.dmx.uni).toBe(1);
   });
 

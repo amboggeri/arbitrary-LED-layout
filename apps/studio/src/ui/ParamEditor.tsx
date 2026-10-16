@@ -1,5 +1,12 @@
 /** Edits an effect layer's parameters, including keyframing at the current time. */
-import { isAnimated, type GradientStop, type Layer, type Param, type ParamValue, type Vec3 } from "@ledlay/core";
+import {
+  isAnimated,
+  type GradientStop,
+  type Layer,
+  type Param,
+  type ParamValue,
+  type Vec3,
+} from "@ledlay/core";
 import * as cmd from "@ledlay/editor";
 import { defaultParamValues, type AnyEffect, type ParamSpec } from "@ledlay/effects";
 import { evaluateParam } from "@ledlay/engine";
@@ -49,13 +56,15 @@ export function ParamEditor({ layer, effect, locator, localTime, error }: Props)
 
   const toggleKey = (key: string) => {
     const raw = layer.params[key];
-    studio.getState().apply(
-      (p) =>
-        keyAt(raw, localTime)
-          ? cmd.removeKeyframe(p, locator, key, localTime)
-          : cmd.setKeyframe(p, locator, key, localTime, valueOf(key)),
-      "Toggle keyframe",
-    );
+    studio
+      .getState()
+      .apply(
+        (p) =>
+          keyAt(raw, localTime)
+            ? cmd.removeKeyframe(p, locator, key, localTime)
+            : cmd.setKeyframe(p, locator, key, localTime, valueOf(key)),
+        "Toggle keyframe",
+      );
   };
 
   return (
@@ -68,12 +77,21 @@ export function ParamEditor({ layer, effect, locator, localTime, error }: Props)
         return (
           <div className="param" key={key}>
             <Field label={spec.label} hint={spec.description}>
-              <ParamControl spec={spec} value={v} name={spec.label} onChange={(nv, live) => set(key, nv, live)} />
+              <ParamControl
+                spec={spec}
+                value={v}
+                name={spec.label}
+                onChange={(nv, live) => set(key, nv, live)}
+              />
             </Field>
             {canKey && (
               <button
                 className={`key ${keyAt(raw, localTime) ? "on" : animated ? "animated" : ""}`}
-                title={animated ? `${(raw as { keyframes: unknown[] }).keyframes.length} keyframes — click to toggle a key here` : "Add keyframe at playhead"}
+                title={
+                  animated
+                    ? `${(raw as { keyframes: unknown[] }).keyframes.length} keyframes — click to toggle a key here`
+                    : "Add keyframe at playhead"
+                }
                 aria-label={`keyframe ${spec.label}`}
                 onClick={() => toggleKey(key)}
               >
@@ -122,13 +140,40 @@ function ParamControl({
         />
       );
     case "boolean":
-      return <Checkbox label="" checked={typeof value === "boolean" ? value : spec.default} onChange={(v) => onChange(v)} />;
+      return (
+        <Checkbox
+          label=""
+          checked={typeof value === "boolean" ? value : spec.default}
+          onChange={(v) => onChange(v)}
+        />
+      );
     case "select":
-      return <Select ariaLabel={name} value={typeof value === "string" ? value : spec.default} options={spec.options} onChange={(v) => onChange(v)} />;
+      return (
+        <Select
+          ariaLabel={name}
+          value={typeof value === "string" ? value : spec.default}
+          options={spec.options}
+          onChange={(v) => onChange(v)}
+        />
+      );
     case "vec3":
-      return <Vec3Input ariaLabel={name} value={Array.isArray(value) && value.length === 3 ? (value as Vec3) : spec.default} step={0.05} onChange={(v) => onChange(v)} />;
+      return (
+        <Vec3Input
+          ariaLabel={name}
+          value={Array.isArray(value) && value.length === 3 ? (value as Vec3) : spec.default}
+          step={0.05}
+          onChange={(v) => onChange(v)}
+        />
+      );
     case "gradient":
-      return <GradientEditor stops={Array.isArray(value) && typeof value[0] === "object" ? (value as GradientStop[]) : spec.default} onChange={(v) => onChange(v)} />;
+      return (
+        <GradientEditor
+          stops={
+            Array.isArray(value) && typeof value[0] === "object" ? (value as GradientStop[]) : spec.default
+          }
+          onChange={(v) => onChange(v)}
+        />
+      );
     case "code":
       return (
         <textarea
@@ -139,25 +184,49 @@ function ParamControl({
           defaultValue={typeof value === "string" ? value : spec.default}
           onBlur={(e) => onChange(e.target.value)}
           onKeyDown={(e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") onChange((e.target as HTMLTextAreaElement).value);
+            if ((e.ctrlKey || e.metaKey) && e.key === "Enter")
+              onChange((e.target as HTMLTextAreaElement).value);
           }}
         />
       );
   }
 }
 
-export function GradientEditor({ stops, onChange }: { stops: GradientStop[]; onChange: (s: GradientStop[]) => void }) {
+export function GradientEditor({
+  stops,
+  onChange,
+}: {
+  stops: GradientStop[];
+  onChange: (s: GradientStop[]) => void;
+}) {
   const sorted = [...stops].sort((a, b) => a.pos - b.pos);
   const css = `linear-gradient(90deg, ${sorted.map((s) => `${s.color} ${Math.round(s.pos * 100)}%`).join(", ")})`;
-  const update = (i: number, s: Partial<GradientStop>) => onChange(sorted.map((x, j) => (j === i ? { ...x, ...s } : x)));
+  const update = (i: number, s: Partial<GradientStop>) =>
+    onChange(sorted.map((x, j) => (j === i ? { ...x, ...s } : x)));
   return (
     <div className="gradient">
       <div className="gradient-bar" style={{ background: css }} />
       {sorted.map((s, i) => (
         <div className="gradient-stop" key={i}>
-          <ColorInput ariaLabel={`stop ${i + 1} color`} value={s.color} onChange={(c) => update(i, { color: c })} />
-          <NumberInput ariaLabel={`stop ${i + 1} position`} value={s.pos} min={0} max={1} step={0.01} onChange={(pos) => update(i, { pos })} />
-          <button className="ghost" aria-label={`remove stop ${i + 1}`} disabled={sorted.length <= 1} onClick={() => onChange(sorted.filter((_, j) => j !== i))}>
+          <ColorInput
+            ariaLabel={`stop ${i + 1} color`}
+            value={s.color}
+            onChange={(c) => update(i, { color: c })}
+          />
+          <NumberInput
+            ariaLabel={`stop ${i + 1} position`}
+            value={s.pos}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(pos) => update(i, { pos })}
+          />
+          <button
+            className="ghost"
+            aria-label={`remove stop ${i + 1}`}
+            disabled={sorted.length <= 1}
+            onClick={() => onChange(sorted.filter((_, j) => j !== i))}
+          >
             ✕
           </button>
         </div>
@@ -166,7 +235,10 @@ export function GradientEditor({ stops, onChange }: { stops: GradientStop[]; onC
         className="ghost"
         onClick={() => {
           const last = sorted.at(-1);
-          onChange([...sorted, { pos: last ? Math.min(1, last.pos + 0.1) : 0, color: last?.color ?? "#ffffff" }]);
+          onChange([
+            ...sorted,
+            { pos: last ? Math.min(1, last.pos + 0.1) : 0, color: last?.color ?? "#ffffff" },
+          ]);
         }}
       >
         + stop

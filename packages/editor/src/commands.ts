@@ -237,7 +237,10 @@ export function removeKeyframe(p: Project, loc: LayerLocator, key: string, t: nu
 
 // ---------------------------------------------------------------- timeline
 
-export function setTimeline(p: Project, changes: Partial<Pick<Project["timeline"], "duration" | "loop">>): Project {
+export function setTimeline(
+  p: Project,
+  changes: Partial<Pick<Project["timeline"], "duration" | "loop">>,
+): Project {
   return edit(p, (d) => void Object.assign(d.timeline, changes));
 }
 
@@ -247,7 +250,11 @@ export function addTrack(p: Project, name = ""): { project: Project; trackId: st
   return { project, trackId };
 }
 
-export function updateTrack(p: Project, id: string, changes: Partial<Pick<Track, "name" | "muted">>): Project {
+export function updateTrack(
+  p: Project,
+  id: string,
+  changes: Partial<Pick<Track, "name" | "muted">>,
+): Project {
   const i = findIdx(p.timeline.tracks, id);
   if (i < 0) return p;
   return edit(p, (d) => void Object.assign(d.timeline.tracks[i]!, changes));

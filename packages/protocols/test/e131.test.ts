@@ -29,22 +29,37 @@ describe("E1.31", () => {
   });
 
   it("round-trips short universes", () => {
-    const pkt = encodeE131Packet({ universe: 300, sequence: 255, cid, sourceName: "x", priority: 150 }, new Uint8Array([1, 2, 3]));
+    const pkt = encodeE131Packet(
+      { universe: 300, sequence: 255, cid, sourceName: "x", priority: 150 },
+      new Uint8Array([1, 2, 3]),
+    );
     const d = decodeE131Packet(pkt);
     expect(d).toMatchObject({ universe: 300, sequence: 255, priority: 150, sourceName: "x" });
     expect([...d.slots]).toEqual([1, 2, 3]);
   });
 
   it("validates inputs", () => {
-    expect(() => encodeE131Packet({ universe: 0, sequence: 0, cid, sourceName: "" }, new Uint8Array(1))).toThrow();
-    expect(() => encodeE131Packet({ universe: 1, sequence: 0, cid: new Uint8Array(3), sourceName: "" }, new Uint8Array(1))).toThrow();
-    expect(() => encodeE131Packet({ universe: 1, sequence: 0, cid, sourceName: "" }, new Uint8Array(513))).toThrow();
+    expect(() =>
+      encodeE131Packet({ universe: 0, sequence: 0, cid, sourceName: "" }, new Uint8Array(1)),
+    ).toThrow();
+    expect(() =>
+      encodeE131Packet(
+        { universe: 1, sequence: 0, cid: new Uint8Array(3), sourceName: "" },
+        new Uint8Array(1),
+      ),
+    ).toThrow();
+    expect(() =>
+      encodeE131Packet({ universe: 1, sequence: 0, cid, sourceName: "" }, new Uint8Array(513)),
+    ).toThrow();
     expect(() => decodeE131Packet(new Uint8Array(10))).toThrow();
     expect(() => decodeE131Packet(new Uint8Array(200))).toThrow(/Not an E1.31/);
   });
 
   it("truncates long source names to fit with a terminating NUL", () => {
-    const pkt = encodeE131Packet({ universe: 1, sequence: 0, cid, sourceName: "n".repeat(100) }, new Uint8Array(1));
+    const pkt = encodeE131Packet(
+      { universe: 1, sequence: 0, cid, sourceName: "n".repeat(100) },
+      new Uint8Array(1),
+    );
     expect(decodeE131Packet(pkt).sourceName).toHaveLength(63);
   });
 

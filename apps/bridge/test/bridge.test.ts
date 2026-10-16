@@ -9,7 +9,12 @@ import { decodeDdpPacket, decodeArtDmx } from "@ledlay/protocols";
 import { startBridge, isAllowedOrigin, type BridgeServer } from "../src/server";
 import { NodeUdpTransport } from "../src/udp";
 
-function udpReceiver(): Promise<{ socket: Socket; port: number; packets: Buffer[]; next(): Promise<Buffer> }> {
+function udpReceiver(): Promise<{
+  socket: Socket;
+  port: number;
+  packets: Buffer[];
+  next(): Promise<Buffer>;
+}> {
   return new Promise((resolve) => {
     const socket = createSocket("udp4");
     const packets: Buffer[] = [];
@@ -24,7 +29,8 @@ function udpReceiver(): Promise<{ socket: Socket; port: number; packets: Buffer[
         socket,
         port: (socket.address() as AddressInfo).port,
         packets,
-        next: () => (packets.length ? Promise.resolve(packets.shift()!) : new Promise((r) => waiters.push(r))),
+        next: () =>
+          packets.length ? Promise.resolve(packets.shift()!) : new Promise((r) => waiters.push(r)),
       }),
     );
   });
@@ -100,7 +106,16 @@ describe("bridge end-to-end", () => {
 
   it("relays Art-Net and ignores unknown controller indices", async () => {
     const rx = await udpReceiver();
-    client.setControllers([createController({ id: "c", name: "c", host: "127.0.0.1", port: rx.port, protocol: "artnet", universeStart: 2 })]);
+    client.setControllers([
+      createController({
+        id: "c",
+        name: "c",
+        host: "127.0.0.1",
+        port: rx.port,
+        protocol: "artnet",
+        universeStart: 2,
+      }),
+    ]);
     client.sendFrame(5, new Uint8Array(3)); // ignored
     client.sendFrame(0, new Uint8Array([1, 2, 3]));
     const d = decodeArtDmx(new Uint8Array(await rx.next()));
@@ -113,7 +128,9 @@ describe("bridge end-to-end", () => {
     expect(await client.rpc("ping")).toBe("pong");
     const info = await client.rpc<{ name: string }>("wled.info", { host: `127.0.0.1:${wledPort}` });
     expect(info.name).toBe("FakeWLED");
-    expect(await client.rpc("discover", { timeoutMs: 10 })).toEqual([{ name: "w", host: "10.0.0.2", port: 80, kind: "wled" }]);
+    expect(await client.rpc("discover", { timeoutMs: 10 })).toEqual([
+      { name: "w", host: "10.0.0.2", port: 80, kind: "wled" },
+    ]);
     await expect(client.rpc("wled.info", { host: "8.8.8.8" })).rejects.toThrow(/not on a private network/);
     await expect(client.rpc("wled.info", {})).rejects.toThrow(/Missing "host"/);
   });
@@ -148,7 +165,9 @@ describe("bridge end-to-end", () => {
   });
 
   it("rejects WebSocket connections from foreign origins", async () => {
-    const ws = new WebSocket(`ws://127.0.0.1:${bridge.port}`, { headers: { Origin: "https://evil.example" } });
+    const ws = new WebSocket(`ws://127.0.0.1:${bridge.port}`, {
+      headers: { Origin: "https://evil.example" },
+    });
     const err = await new Promise<Error>((r) => ws.on("error", r));
     expect(err.message).toMatch(/401|403|Unexpected server response/);
   });

@@ -13,7 +13,12 @@
   --sel: #ffd23d;
   --radius: 6px;
   color-scheme: dark;
-  font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font:
+    13px/1.4 system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
 }
 
 * {
@@ -414,8 +419,11 @@ input.num {
 .key {
   background: none;
   border: none;
-  color: var(--line);
+  color: #4a5368;
   padding: 0;
+}
+.key:hover {
+  color: var(--sel);
 }
 .key.animated {
   color: var(--muted);
@@ -594,7 +602,7 @@ dl.info dd {
   border-bottom: 1px solid var(--line);
 }
 .track-header select {
-  max-width: 70px;
+  max-width: 84px;
 }
 .track-area {
   overflow-x: auto;

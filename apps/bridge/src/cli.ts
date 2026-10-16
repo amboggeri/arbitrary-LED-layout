@@ -34,7 +34,10 @@ async function loadProject(path: string | undefined) {
   return parseProjectJson(await readFile(path, "utf8"));
 }
 
-export async function runCli(argv: string[], io: CliIo = { out: console.log, err: console.error }): Promise<number> {
+export async function runCli(
+  argv: string[],
+  io: CliIo = { out: console.log, err: console.error },
+): Promise<number> {
   const [command, ...rest] = argv;
   const { values, positionals } = parseArgs({
     args: rest,
@@ -75,7 +78,9 @@ export async function runCli(argv: string[], io: CliIo = { out: console.log, err
     case "play": {
       const project = await loadProject(positionals[0]);
       const transport = new NodeUdpTransport();
-      io.out(`Playing "${project.name}" (${totalLedCount(project)} LEDs) at ${project.fps} fps — Ctrl+C to stop`);
+      io.out(
+        `Playing "${project.name}" (${totalLedCount(project)} LEDs) at ${project.fps} fps — Ctrl+C to stop`,
+      );
       const run = playHeadless(project, {
         transport,
         registry: createDefaultRegistry(),
@@ -86,7 +91,9 @@ export async function runCli(argv: string[], io: CliIo = { out: console.log, err
       process.once("SIGINT", () => run.stop());
       await run.done;
       await transport.close();
-      io.out(`Sent ${run.sender.stats.frames} frames, ${run.sender.stats.packets} packets, ${run.sender.stats.errors} errors`);
+      io.out(
+        `Sent ${run.sender.stats.frames} frames, ${run.sender.stats.packets} packets, ${run.sender.stats.errors} errors`,
+      );
       return 0;
     }
     case "bake": {
@@ -107,7 +114,9 @@ export async function runCli(argv: string[], io: CliIo = { out: console.log, err
       const project = await loadProject(positionals[0]);
       const issues = validatePatch(project);
       for (const i of issues) io.out(`${i.severity.toUpperCase()}: ${i.message}`);
-      io.out(`${project.fixtures.length} fixtures, ${totalLedCount(project)} LEDs, ${project.controllers.length} controllers`);
+      io.out(
+        `${project.fixtures.length} fixtures, ${totalLedCount(project)} LEDs, ${project.controllers.length} controllers`,
+      );
       return issues.some((i) => i.severity === "error") ? 1 : 0;
     }
     case "wled-info": {

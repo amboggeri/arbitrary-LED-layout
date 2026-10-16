@@ -65,9 +65,16 @@ export function encodeE131Packet(o: E131Options, slots: Uint8Array): Uint8Array 
   return pkt;
 }
 
-export function decodeE131Packet(pkt: Uint8Array): { universe: number; sequence: number; priority: number; slots: Uint8Array; sourceName: string } {
+export function decodeE131Packet(pkt: Uint8Array): {
+  universe: number;
+  sequence: number;
+  priority: number;
+  slots: Uint8Array;
+  sourceName: string;
+} {
   if (pkt.length < E131_DATA_OFFSET) throw new RangeError("E1.31 packet too short");
-  for (let i = 0; i < ACN_ID.length; i++) if (pkt[4 + i] !== ACN_ID[i]) throw new Error("Not an E1.31 packet");
+  for (let i = 0; i < ACN_ID.length; i++)
+    if (pkt[4 + i] !== ACN_ID[i]) throw new Error("Not an E1.31 packet");
   const v = new DataView(pkt.buffer, pkt.byteOffset, pkt.byteLength);
   const count = v.getUint16(123) - 1;
   const nameBytes = pkt.subarray(44, 108);

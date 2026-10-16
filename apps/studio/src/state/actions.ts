@@ -1,5 +1,12 @@
 /** File-level actions (open/save/import/export). UI-agnostic so they can be unit-tested. */
-import { createProject, fixtureWorldPoints, parseProjectJson, serializeProject, type Project, type Vec3 } from "@ledlay/core";
+import {
+  createProject,
+  fixtureWorldPoints,
+  parseProjectJson,
+  serializeProject,
+  type Project,
+  type Vec3,
+} from "@ledlay/core";
 import * as cmd from "@ledlay/editor";
 import type { EffectRegistry } from "@ledlay/effects";
 import { parsePointsCsv, parseXModel, pointsToCsv, toXModel, type CsvImportOptions } from "@ledlay/io";
@@ -8,9 +15,9 @@ import { downloadBlob, modelFormat, pickFile, readFileAsDataUrl, safeFileName } 
 import type { StudioStore } from "./store";
 
 export function newProject(store: StudioStore): void {
-  store.getState().loadProject(
-    cmd.addLayer(createProject({ name: "Untitled" }), { name: "Rainbow", effectId: "rainbow" }),
-  );
+  store
+    .getState()
+    .loadProject(cmd.addLayer(createProject({ name: "Untitled" }), { name: "Rainbow", effectId: "rainbow" }));
 }
 
 export function openProjectText(store: StudioStore, text: string): void {
@@ -24,12 +31,19 @@ export function saveProject(project: Project): void {
 /** Add an imported point list as a new "points" fixture. Returns the fixture id. */
 export function importPoints(store: StudioStore, name: string, points: Vec3[]): string {
   const id = `fx_import_${Date.now().toString(36)}`;
-  store.getState().apply((p) => cmd.addFixture(p, { id, name, geometry: { kind: "points", points } }), `Import ${name}`);
+  store
+    .getState()
+    .apply((p) => cmd.addFixture(p, { id, name, geometry: { kind: "points", points } }), `Import ${name}`);
   store.getState().select({ kind: "fixture", ids: [id] });
   return id;
 }
 
-export function importCsvText(store: StudioStore, name: string, text: string, opts?: CsvImportOptions): string[] {
+export function importCsvText(
+  store: StudioStore,
+  name: string,
+  text: string,
+  opts?: CsvImportOptions,
+): string[] {
   const r = parsePointsCsv(text, opts);
   if (r.points.length === 0) throw new Error(r.warnings[0] ?? "No points found");
   importPoints(store, name, r.points);
@@ -53,10 +67,18 @@ export function exportPointsCsv(project: Project, fixtureIds?: string[]): string
 
 export function exportXModel(project: Project, fixtureIds?: string[]): string {
   const fx = project.fixtures.filter((f) => !fixtureIds || fixtureIds.includes(f.id));
-  return toXModel(fx.length === 1 ? fx[0]!.name : project.name, fx.flatMap((f) => fixtureWorldPoints(f)));
+  return toXModel(
+    fx.length === 1 ? fx[0]!.name : project.name,
+    fx.flatMap((f) => fixtureWorldPoints(f)),
+  );
 }
 
-export function exportFseq(project: Project, registry: EffectRegistry, controllerId: string, duration?: number): Uint8Array {
+export function exportFseq(
+  project: Project,
+  registry: EffectRegistry,
+  controllerId: string,
+  duration?: number,
+): Uint8Array {
   return bakeFseq(project, registry, { controllerId, duration });
 }
 
@@ -72,7 +94,8 @@ export async function pickAndImportModel(store: StudioStore): Promise<void> {
   if (!f) return;
   const format = modelFormat(f.name);
   if (!format) throw new Error(`Unsupported model format: ${f.name}`);
-  if (f.size > 25 * 1024 * 1024) store.getState().notify("info", "Large model embedded in the project; autosave may be skipped.");
+  if (f.size > 25 * 1024 * 1024)
+    store.getState().notify("info", "Large model embedded in the project; autosave may be skipped.");
   const uri = await readFileAsDataUrl(f);
   store.getState().apply(
     (p) =>

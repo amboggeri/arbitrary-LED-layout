@@ -7,7 +7,11 @@ function base(): Project {
   p = cmd.addController(p, { id: "c", name: "C", host: "h" });
   p = cmd.addFixture(p, { id: "a", name: "A", geometry: { kind: "strip", count: 5, spacing: 1 } });
   p = cmd.addFixture(p, { id: "b", name: "B", geometry: { kind: "strip", count: 3, spacing: 1 } });
-  p = cmd.addLayer(p, { id: "l1", effectId: "solid", mask: { fixtureIds: ["a", "b"], tags: [], invert: false } });
+  p = cmd.addLayer(p, {
+    id: "l1",
+    effectId: "solid",
+    mask: { fixtureIds: ["a", "b"], tags: [], invert: false },
+  });
   p = cmd.addLayer(p, { id: "l2", effectId: "rainbow" });
   return p;
 }
@@ -143,7 +147,12 @@ describe("layers", () => {
     });
     p = cmd.setKeyframe(p, { layerId: "l2" }, "speed", 1, 5, "easeIn");
     p = cmd.setKeyframe(p, { layerId: "l2" }, "speed", 2, 4);
-    expect((p.layers[1]!.params.speed as { keyframes: { t: number; v: unknown }[] }).keyframes.map((k) => [k.t, k.v])).toEqual([
+    expect(
+      (p.layers[1]!.params.speed as { keyframes: { t: number; v: unknown }[] }).keyframes.map((k) => [
+        k.t,
+        k.v,
+      ]),
+    ).toEqual([
       [0, 1],
       [1, 5],
       [2, 4],
@@ -167,7 +176,12 @@ describe("timeline", () => {
     const t1 = cmd.addTrack(p, "One");
     const t2 = cmd.addTrack(t1.project, "Two");
     p = t2.project;
-    const added = cmd.addClip(p, t1.trackId, { start: 8, duration: 5, fadeIn: 1, layer: { effectId: "solid" } });
+    const added = cmd.addClip(p, t1.trackId, {
+      start: 8,
+      duration: 5,
+      fadeIn: 1,
+      layer: { effectId: "solid" },
+    });
     p = valid(added.project);
     expect(p.timeline.duration).toBe(13);
     p = cmd.updateClip(p, added.clipId, { start: -5, duration: 0 });

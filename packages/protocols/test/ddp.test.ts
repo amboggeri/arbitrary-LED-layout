@@ -13,30 +13,57 @@ import {
 describe("DDP packet encoding", () => {
   it("produces the exact header bytes", () => {
     const pkt = encodeDdpPacket(
-      { flags: DDP_FLAG_VER1 | DDP_FLAG_PUSH, sequence: 3, dataType: DDP_TYPE_RGB8, destination: 1, offset: 0x01020304 },
+      {
+        flags: DDP_FLAG_VER1 | DDP_FLAG_PUSH,
+        sequence: 3,
+        dataType: DDP_TYPE_RGB8,
+        destination: 1,
+        offset: 0x01020304,
+      },
       new Uint8Array([255, 0, 128]),
     );
     expect([...pkt]).toEqual([0x41, 0x03, 0x0b, 0x01, 0x01, 0x02, 0x03, 0x04, 0x00, 0x03, 255, 0, 128]);
   });
 
   it("masks the sequence to 4 bits", () => {
-    const pkt = encodeDdpPacket({ flags: 0x40, sequence: 0x1f, dataType: 0x0b, destination: 1, offset: 0 }, new Uint8Array(0));
+    const pkt = encodeDdpPacket(
+      { flags: 0x40, sequence: 0x1f, dataType: 0x0b, destination: 1, offset: 0 },
+      new Uint8Array(0),
+    );
     expect(pkt[1]).toBe(0x0f);
   });
 
   it("decodes what it encodes", () => {
     const data = new Uint8Array([1, 2, 3, 4, 5, 6]);
-    const pkt = encodeDdpPacket({ flags: 0x41, sequence: 7, dataType: 0x0b, destination: 1, offset: 300 }, data);
+    const pkt = encodeDdpPacket(
+      { flags: 0x41, sequence: 7, dataType: 0x0b, destination: 1, offset: 300 },
+      data,
+    );
     const d = decodeDdpPacket(pkt);
-    expect(d.header).toEqual({ flags: 0x41, sequence: 7, dataType: 0x0b, destination: 1, offset: 300, length: 6 });
+    expect(d.header).toEqual({
+      flags: 0x41,
+      sequence: 7,
+      dataType: 0x0b,
+      destination: 1,
+      offset: 300,
+      length: 6,
+    });
     expect([...d.data]).toEqual([...data]);
   });
 
   it("rejects short and truncated packets", () => {
     expect(() => decodeDdpPacket(new Uint8Array(5))).toThrow(/too short/);
-    const pkt = encodeDdpPacket({ flags: 0x41, sequence: 0, dataType: 0x0b, destination: 1, offset: 0 }, new Uint8Array(6));
+    const pkt = encodeDdpPacket(
+      { flags: 0x41, sequence: 0, dataType: 0x0b, destination: 1, offset: 0 },
+      new Uint8Array(6),
+    );
     expect(() => decodeDdpPacket(pkt.subarray(0, 12))).toThrow(/truncated/);
-    expect(() => encodeDdpPacket({ flags: 0, sequence: 0, dataType: 0, destination: 0, offset: 0 }, new Uint8Array(70000))).toThrow();
+    expect(() =>
+      encodeDdpPacket(
+        { flags: 0, sequence: 0, dataType: 0, destination: 0, offset: 0 },
+        new Uint8Array(70000),
+      ),
+    ).toThrow();
   });
 });
 
@@ -46,7 +73,7 @@ describe("DDP framing", () => {
     const data = new Uint8Array(px * 3).map((_, i) => i & 0xff);
     const pkts = ddpFramePackets(data, { sequence: 2 });
     expect(pkts).toHaveLength(Math.ceil((px * 3) / DDP_MAX_DATA));
-    let reassembled = new Uint8Array(data.length);
+    const reassembled = new Uint8Array(data.length);
     pkts.forEach((p, i) => {
       const { header, data: chunk } = decodeDdpPacket(p);
       expect(header.offset % 3).toBe(0);

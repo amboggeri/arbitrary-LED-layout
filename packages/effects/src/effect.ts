@@ -33,7 +33,9 @@ export interface EffectDefinition<P extends ParamSpecs = ParamSpecs, S = unknown
 }
 
 /** Identity helper giving full type inference for effect authors. */
-export function defineEffect<P extends ParamSpecs, S = undefined>(def: EffectDefinition<P, S>): EffectDefinition<P, S> {
+export function defineEffect<P extends ParamSpecs, S = undefined>(
+  def: EffectDefinition<P, S>,
+): EffectDefinition<P, S> {
   return def;
 }
 
