@@ -1,5 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { axisCoord, createPixelSpace, fbm3, fill, fract, hash01, mulberry32, noise3, normalizeDir, smoothstep, triangle } from "../src";
+import {
+  axisCoord,
+  createPixelSpace,
+  fbm3,
+  fill,
+  fract,
+  hash01,
+  mulberry32,
+  noise3,
+  normalizeDir,
+  smoothstep,
+  triangle,
+} from "../src";
 
 describe("helpers", () => {
   const s = createPixelSpace({ xyz: [0, 0, 0, 10, 20, 30], fixture: [0, 1], indexInFixture: [0, 0] });

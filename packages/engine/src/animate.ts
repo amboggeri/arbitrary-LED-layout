@@ -1,14 +1,17 @@
-/** Keyframe evaluation for layer parameters. */
+/** Keyframe and LFO evaluation for layer parameters. */
 import {
   isAnimated,
+  isModulated,
   lerpColor,
   parseHex,
   toHex,
   type Easing,
   type Keyframe,
+  type Lfo,
   type Param,
   type ParamValue,
 } from "@ledlay/core";
+import { hash01 } from "@ledlay/effects";
 
 export function ease(kind: Easing, t: number): number {
   switch (kind) {
@@ -74,8 +77,32 @@ export function evaluateKeyframes(keys: readonly Keyframe[], t: number): ParamVa
   return ks[ks.length - 1]!.v;
 }
 
+/** LFO waveform in [0,1] at time t. "random" is a deterministic sample-and-hold. */
+export function lfoWave(lfo: Lfo, t: number): number {
+  const x = t * lfo.rate + lfo.phase;
+  const phase = x - Math.floor(x);
+  switch (lfo.shape) {
+    case "sine":
+      return 0.5 - 0.5 * Math.cos(phase * Math.PI * 2);
+    case "triangle":
+      return phase < 0.5 ? phase * 2 : 2 - phase * 2;
+    case "saw":
+      return phase;
+    case "square":
+      return phase < 0.5 ? 1 : 0;
+    case "random":
+      return hash01(Math.floor(x), 0x1f0);
+  }
+}
+
+export function evaluateLfo(lfo: Lfo, t: number): number {
+  return lfo.min + (lfo.max - lfo.min) * lfoWave(lfo, t);
+}
+
 export function evaluateParam(p: Param, t: number): ParamValue {
-  return isAnimated(p) ? evaluateKeyframes(p.keyframes, t) : p;
+  if (isAnimated(p)) return evaluateKeyframes(p.keyframes, t);
+  if (isModulated(p)) return evaluateLfo(p.lfo, t);
+  return p;
 }
 
 export function evaluateParams(params: Record<string, Param>, t: number): Record<string, ParamValue> {

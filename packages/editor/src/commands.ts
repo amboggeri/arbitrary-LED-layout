@@ -9,6 +9,8 @@ import {
   createController,
   createFixture,
   createLayer,
+  isAnimated,
+  isStaticParam,
   newId,
   type Clip,
   type Controller,
@@ -18,6 +20,7 @@ import {
   type Keyframe,
   type Layer,
   type LayerInput,
+  type Lfo,
   type Param,
   type ParamValue,
   type Patch,
@@ -209,10 +212,14 @@ export function setKeyframe(
     const layer = locateLayer(d, loc)!;
     const cur = layer.params[key];
     let keys: Keyframe[];
-    if (cur !== undefined && typeof cur === "object" && !Array.isArray(cur) && "keyframes" in cur) {
-      keys = cur.keyframes as Keyframe[];
+    if (cur !== undefined && isAnimated(cur as Param)) {
+      keys = (cur as { keyframes: Keyframe[] }).keyframes;
     } else {
-      keys = cur !== undefined && t > 0 ? [{ t: 0, v: cur as ParamValue, ease: "linear" }] : [];
+      // Seed from a static value; an LFO-modulated param is replaced outright.
+      keys =
+        cur !== undefined && t > 0 && isStaticParam(cur as Param)
+          ? [{ t: 0, v: cur as ParamValue, ease: "linear" }]
+          : [];
     }
     keys = keys.filter((k) => Math.abs(k.t - t) > 1e-6);
     keys.push({ t, v, ease });
@@ -222,6 +229,23 @@ export function setKeyframe(
 }
 
 /** Remove the keyframe at time t; if one key remains the param becomes static. */
+/** Attach (or with null, remove) an LFO on a numeric parameter. Removing restores `fallback`. */
+export function setLfo(
+  p: Project,
+  loc: LayerLocator,
+  key: string,
+  lfo: Lfo | null,
+  fallback?: number,
+): Project {
+  if (!hasLayer(p, loc)) return p;
+  return edit(p, (d) => {
+    const layer = locateLayer(d, loc)!;
+    if (lfo) layer.params[key] = { lfo } as Draft<Param>;
+    else if (fallback !== undefined) layer.params[key] = fallback;
+    else delete layer.params[key];
+  });
+}
+
 export function removeKeyframe(p: Project, loc: LayerLocator, key: string, t: number): Project {
   if (!hasLayer(p, loc)) return p;
   return edit(p, (d) => {

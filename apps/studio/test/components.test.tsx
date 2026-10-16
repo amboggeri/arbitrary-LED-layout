@@ -144,6 +144,20 @@ describe("Inspector", () => {
     expect(screen.getByLabelText("Position (−1..1) x")).toBeTruthy();
   });
 
+  it("toggles and edits an LFO on a numeric param", () => {
+    act(() => studio.getState().select({ kind: "layer", id: "l1" }));
+    wrap(<Inspector />);
+    const layer = () => studio.getState().project.layers[0]!;
+    fireEvent.click(screen.getByLabelText("lfo Repeat"));
+    expect(layer().params.repeat).toMatchObject({ lfo: { shape: "sine", min: 1 } });
+    fireEvent.change(screen.getByLabelText("Repeat lfo shape"), { target: { value: "square" } });
+    commit(screen.getByLabelText("Repeat lfo rate"), "3");
+    expect(layer().params.repeat).toMatchObject({ lfo: { shape: "square", rate: 3 } });
+    expect(screen.queryByLabelText("keyframe Repeat")).toBeNull();
+    fireEvent.click(screen.getByLabelText("lfo Repeat"));
+    expect(layer().params.repeat).toBe(1);
+  });
+
   it("shows script errors from the runtime", () => {
     act(() => {
       studio.getState().apply((p) => cmd.setLayerParam(p, { layerId: "l2" }, "code", "return ("));

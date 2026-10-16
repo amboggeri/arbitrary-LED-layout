@@ -86,3 +86,19 @@ describe("factories", () => {
     expect(isAnimated([{ pos: 0, color: "#000" }])).toBe(false);
   });
 });
+
+describe("param kinds", () => {
+  it("distinguishes static, keyframed and modulated params and validates LFOs", async () => {
+    const { isModulated, isStaticParam, parseProject } = await import("../src");
+    const lfo = { lfo: { shape: "sine" as const, rate: 1, min: 0, max: 1, phase: 0 } };
+    expect(isModulated(lfo)).toBe(true);
+    expect(isStaticParam(lfo)).toBe(false);
+    expect(isStaticParam(3)).toBe(true);
+    expect(isStaticParam({ keyframes: [{ t: 0, v: 1, ease: "linear" }] })).toBe(false);
+    const p = parseProject({ layers: [{ id: "l", effectId: "x", params: { speed: { lfo: { rate: 2 } } } }] });
+    expect(p.layers[0]!.params.speed).toEqual({ lfo: { shape: "sine", rate: 2, min: 0, max: 1, phase: 0 } });
+    expect(() =>
+      parseProject({ layers: [{ id: "l", effectId: "x", params: { speed: { lfo: { rate: -1 } } } }] }),
+    ).toThrow();
+  });
+});

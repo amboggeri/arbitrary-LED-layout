@@ -15,6 +15,8 @@ describe("worldToLocal", () => {
     }
   });
   it("returns the point unchanged for degenerate scale", () => {
-    expect(worldToLocal({ position: [0, 0, 0], rotation: [0, 0, 0], scale: [0, 1, 1] }, [1, 2, 3])).toEqual([1, 2, 3]);
+    expect(worldToLocal({ position: [0, 0, 0], rotation: [0, 0, 0], scale: [0, 1, 1] }, [1, 2, 3])).toEqual([
+      1, 2, 3,
+    ]);
   });
 });

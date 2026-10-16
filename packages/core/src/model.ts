@@ -177,7 +177,22 @@ export const keyframeSchema = z.object({
 
 export const animatedParamSchema = z.object({ keyframes: z.array(keyframeSchema).min(1) });
 
-export const paramSchema = z.union([paramValueSchema, animatedParamSchema]);
+export const LFO_SHAPES = ["sine", "triangle", "saw", "square", "random"] as const;
+
+/** Low-frequency oscillator driving a numeric parameter between min and max. */
+export const lfoSchema = z.object({
+  shape: z.enum(LFO_SHAPES).default("sine"),
+  /** Cycles per second. */
+  rate: z.number().positive().default(0.5),
+  min: z.number().default(0),
+  max: z.number().default(1),
+  /** Phase offset in cycles (0..1). */
+  phase: z.number().default(0),
+});
+
+export const modulatedParamSchema = z.object({ lfo: lfoSchema });
+
+export const paramSchema = z.union([paramValueSchema, animatedParamSchema, modulatedParamSchema]);
 
 export const BLEND_MODES = ["normal", "add", "multiply", "screen", "max", "min", "subtract"] as const;
 
@@ -279,6 +294,8 @@ export type Easing = (typeof EASINGS)[number];
 export type ParamValue = z.infer<typeof paramValueSchema>;
 export type Keyframe = z.infer<typeof keyframeSchema>;
 export type AnimatedParam = z.infer<typeof animatedParamSchema>;
+export type Lfo = z.infer<typeof lfoSchema>;
+export type ModulatedParam = z.infer<typeof modulatedParamSchema>;
 export type Param = z.infer<typeof paramSchema>;
 export type BlendMode = (typeof BLEND_MODES)[number];
 export type Mask = z.infer<typeof maskSchema>;
@@ -298,4 +315,13 @@ export type ProjectInput = z.input<typeof projectSchema>;
 
 export function isAnimated(p: Param): p is AnimatedParam {
   return typeof p === "object" && p !== null && !Array.isArray(p) && "keyframes" in p;
+}
+
+export function isModulated(p: Param): p is ModulatedParam {
+  return typeof p === "object" && p !== null && !Array.isArray(p) && "lfo" in p;
+}
+
+/** True for plain values (neither keyframed nor modulated). */
+export function isStaticParam(p: Param): p is ParamValue {
+  return !isAnimated(p) && !isModulated(p);
 }

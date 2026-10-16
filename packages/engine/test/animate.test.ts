@@ -87,3 +87,30 @@ describe("keyframes", () => {
     });
   });
 });
+
+describe("LFO modulation", () => {
+  const base = { rate: 1, min: 10, max: 20, phase: 0 };
+  it("produces each waveform in [min, max]", async () => {
+    const { evaluateLfo, lfoWave } = await import("../src");
+    expect(lfoWave({ ...base, shape: "sine" }, 0)).toBeCloseTo(0);
+    expect(lfoWave({ ...base, shape: "sine" }, 0.5)).toBeCloseTo(1);
+    expect(lfoWave({ ...base, shape: "triangle" }, 0.25)).toBeCloseTo(0.5);
+    expect(lfoWave({ ...base, shape: "triangle" }, 0.75)).toBeCloseTo(0.5);
+    expect(lfoWave({ ...base, shape: "saw" }, 0.3)).toBeCloseTo(0.3);
+    expect(lfoWave({ ...base, shape: "square" }, 0.2)).toBe(1);
+    expect(lfoWave({ ...base, shape: "square" }, 0.7)).toBe(0);
+    const r1 = lfoWave({ ...base, shape: "random" }, 0.1);
+    expect(lfoWave({ ...base, shape: "random" }, 0.9)).toBe(r1); // held within a cycle
+    expect(evaluateLfo({ ...base, shape: "saw", phase: 0.5 }, 0)).toBeCloseTo(15);
+    for (let t = 0; t < 5; t += 0.13) {
+      const v = evaluateLfo({ ...base, shape: "random" }, t);
+      expect(v).toBeGreaterThanOrEqual(10);
+      expect(v).toBeLessThanOrEqual(20);
+    }
+  });
+  it("evaluateParam dispatches to LFOs", () => {
+    expect(evaluateParam({ lfo: { shape: "saw", rate: 1, min: 0, max: 10, phase: 0 } }, 0.25)).toBeCloseTo(
+      2.5,
+    );
+  });
+});

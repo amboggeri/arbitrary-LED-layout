@@ -7,8 +7,6 @@ import { studio, useStudio } from "../state/store";
 import { worldToLocal } from "./coords";
 import { Viewport3D, type GizmoMode } from "./Viewport3D";
 
-
-
 export function ViewportView() {
   const host = useRef<HTMLDivElement>(null);
   const view = useRef<Viewport3D | null>(null);

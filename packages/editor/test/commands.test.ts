@@ -225,3 +225,20 @@ describe("models and meta", () => {
     expect(p).toMatchObject({ name: "X", fps: 60, playback: "timeline", units: "m" });
   });
 });
+
+describe("LFO command", () => {
+  const lfo = { shape: "triangle" as const, rate: 2, min: 0, max: 1, phase: 0 };
+  it("attaches, replaces with keyframes, and removes with a fallback", () => {
+    let p = cmd.setLfo(base(), { layerId: "l2" }, "speed", lfo);
+    expect(p.layers[1]!.params.speed).toEqual({ lfo });
+    valid(p);
+    // keyframing an LFO param replaces it (no bogus seed key)
+    const k = cmd.setKeyframe(p, { layerId: "l2" }, "speed", 2, 5);
+    expect(k.layers[1]!.params.speed).toEqual({ keyframes: [{ t: 2, v: 5, ease: "linear" }] });
+    p = cmd.setLfo(p, { layerId: "l2" }, "speed", null, 0.7);
+    expect(p.layers[1]!.params.speed).toBe(0.7);
+    p = cmd.setLfo(cmd.setLfo(p, { layerId: "l2" }, "speed", lfo), { layerId: "l2" }, "speed", null);
+    expect(p.layers[1]!.params.speed).toBeUndefined();
+    expect(cmd.setLfo(p, { layerId: "zz" }, "speed", lfo)).toBe(p);
+  });
+});

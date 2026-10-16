@@ -413,8 +413,25 @@ input.num {
 }
 .param {
   display: grid;
-  grid-template-columns: 1fr 22px;
+  grid-template-columns: 1fr auto auto;
+  gap: 2px;
   align-items: center;
+}
+.lfo-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  font-size: 11px;
+  color: var(--muted);
+}
+.lfo-controls label {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+.lfo-controls input.num {
+  width: 46px;
 }
 .key {
   background: none;
