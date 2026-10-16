@@ -33,9 +33,6 @@ const P = new Uint8Array(512);
   for (let i = 0; i < 512; i++) P[i] = perm[i & 255]!;
 }
 
-function fade(t: number): number {
-  return t * t * t * (t * (t * 6 - 15) + 10);
-}
 function grad(hash: number, x: number, y: number, z: number): number {
   const h = hash & 15;
   const u = h < 8 ? x : y;
@@ -43,37 +40,41 @@ function grad(hash: number, x: number, y: number, z: number): number {
   return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
 }
 
-/** 3D gradient noise in roughly [-1, 1]. */
+/** 3D gradient noise in roughly [-1, 1]. Hot path: no allocations or closures. */
 export function noise3(x: number, y: number, z: number): number {
-  const X = Math.floor(x) & 255,
-    Y = Math.floor(y) & 255,
-    Z = Math.floor(z) & 255;
-  x -= Math.floor(x);
-  y -= Math.floor(y);
-  z -= Math.floor(z);
-  const u = fade(x),
-    v = fade(y),
-    w = fade(z);
+  const fx = Math.floor(x),
+    fy = Math.floor(y),
+    fz = Math.floor(z);
+  const X = fx & 255,
+    Y = fy & 255,
+    Z = fz & 255;
+  x -= fx;
+  y -= fy;
+  z -= fz;
+  const u = x * x * x * (x * (x * 6 - 15) + 10);
+  const v = y * y * y * (y * (y * 6 - 15) + 10);
+  const w = z * z * z * (z * (z * 6 - 15) + 10);
   const A = P[X]! + Y,
     AA = P[A]! + Z,
     AB = P[A + 1]! + Z;
   const B = P[X + 1]! + Y,
     BA = P[B]! + Z,
     BB = P[B + 1]! + Z;
-  const l = (a: number, b: number, t: number) => a + t * (b - a);
-  return l(
-    l(
-      l(grad(P[AA]!, x, y, z), grad(P[BA]!, x - 1, y, z), u),
-      l(grad(P[AB]!, x, y - 1, z), grad(P[BB]!, x - 1, y - 1, z), u),
-      v,
-    ),
-    l(
-      l(grad(P[AA + 1]!, x, y, z - 1), grad(P[BA + 1]!, x - 1, y, z - 1), u),
-      l(grad(P[AB + 1]!, x, y - 1, z - 1), grad(P[BB + 1]!, x - 1, y - 1, z - 1), u),
-      v,
-    ),
-    w,
-  );
+  const g000 = grad(P[AA]!, x, y, z),
+    g100 = grad(P[BA]!, x - 1, y, z);
+  const g010 = grad(P[AB]!, x, y - 1, z),
+    g110 = grad(P[BB]!, x - 1, y - 1, z);
+  const g001 = grad(P[AA + 1]!, x, y, z - 1),
+    g101 = grad(P[BA + 1]!, x - 1, y, z - 1);
+  const g011 = grad(P[AB + 1]!, x, y - 1, z - 1),
+    g111 = grad(P[BB + 1]!, x - 1, y - 1, z - 1);
+  const x00 = g000 + u * (g100 - g000),
+    x10 = g010 + u * (g110 - g010);
+  const x01 = g001 + u * (g101 - g001),
+    x11 = g011 + u * (g111 - g011);
+  const y0 = x00 + v * (x10 - x00),
+    y1 = x01 + v * (x11 - x01);
+  return y0 + w * (y1 - y0);
 }
 
 /** Fractal Brownian motion over noise3, normalised to roughly [0,1]. */
