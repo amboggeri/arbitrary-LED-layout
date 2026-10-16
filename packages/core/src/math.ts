@@ -2,7 +2,7 @@
 
 export type Vec3 = [number, number, number];
 
-/** Euler rotation in degrees, applied in X, then Y, then Z order (intrinsic XYZ, same as three.js "XYZ"). */
+/** Euler rotation in degrees using three.js order "XYZ": R = Rx * Ry * Rz. */
 export interface Transform {
   position: Vec3;
   rotation: Vec3;
@@ -68,7 +68,7 @@ export function mod(v: number, m: number): number {
   return ((v % m) + m) % m;
 }
 
-/** Compose a transform into a matrix: M = T * Rz * Ry * Rx * S. */
+/** Compose a transform into a matrix: M = T * (Rx * Ry * Rz) * S. */
 export function composeMatrix(t: Transform): Mat4 {
   const [px, py, pz] = t.position;
   const [sx, sy, sz] = t.scale;

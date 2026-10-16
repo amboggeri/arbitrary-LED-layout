@@ -1,8 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "noEmit": true,
-    "types": ["node", "vite/client"]
+    "noEmit": true
   },
-  "include": ["packages/*/src", "packages/*/test", "apps/*/src", "apps/*/test", "apps/*/e2e", "*.config.ts", "apps/*/*.config.ts"]
+  "include": ["packages/*/src", "packages/*/test", "apps/bridge/src", "apps/bridge/test", "*.config.ts", "packages/*/*.config.ts"]
 }
