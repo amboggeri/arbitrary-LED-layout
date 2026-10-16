@@ -11,7 +11,7 @@
   "scripts": {
     "start": "tsx src/cli.ts serve",
     "cli": "tsx src/cli.ts",
-    "build": "esbuild src/cli.ts --bundle --platform=node --format=esm --target=node22 --outfile=dist/ledlay.mjs --banner:js=\"#!/usr/bin/env node\""
+    "build": "node build.mjs"
   },
   "dependencies": {
     "@ledlay/core": "workspace:*",

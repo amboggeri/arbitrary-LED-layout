@@ -6,3 +6,5 @@ test-results
 *.log
 .DS_Store
 *.tsbuildinfo
+apps/studio/test-results
+apps/studio/playwright-report
