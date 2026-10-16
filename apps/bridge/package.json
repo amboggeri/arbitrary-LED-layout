@@ -1,0 +1,31 @@
+{
+  "name": "@ledlay/bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Node bridge + CLI: relays studio frames to controllers over UDP, talks to WLED, plays/bakes projects headlessly.",
+  "license": "MIT",
+  "bin": {
+    "ledlay": "./dist/ledlay.mjs"
+  },
+  "scripts": {
+    "start": "tsx src/cli.ts serve",
+    "cli": "tsx src/cli.ts",
+    "build": "esbuild src/cli.ts --bundle --platform=node --format=esm --target=node22 --outfile=dist/ledlay.mjs --banner:js=\"#!/usr/bin/env node\""
+  },
+  "dependencies": {
+    "@ledlay/core": "workspace:*",
+    "@ledlay/effects": "workspace:*",
+    "@ledlay/engine": "workspace:*",
+    "@ledlay/link": "workspace:*",
+    "@ledlay/protocols": "workspace:*",
+    "@ledlay/targets": "workspace:*",
+    "bonjour-service": "^1.4.4",
+    "ws": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.2",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.23.15"
+  }
+}

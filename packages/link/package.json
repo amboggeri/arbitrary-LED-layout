@@ -1,0 +1,12 @@
+{
+  "name": "@ledlay/link",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Wire contract between the studio (browser) and the bridge (Node): messages, binary frames, and a reconnecting client.",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {"@ledlay/core": "workspace:*", "zod": "^4.6.7"}
+}
