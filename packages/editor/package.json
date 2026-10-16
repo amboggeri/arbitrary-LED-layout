@@ -8,5 +8,5 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "dependencies": {"@ledlay/core": "workspace:*"}
+  "dependencies": {"@ledlay/core": "workspace:*", "immer": "^11.0.0"}
 }
