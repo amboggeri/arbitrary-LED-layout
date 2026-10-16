@@ -66,13 +66,14 @@ can copy to a Pi and run with `node ledlay.mjs serve|play|bake …`.
   - **Script**: per-pixel JavaScript, Pixelblaze-style.
 - **Layers:** blend modes (normal/add/multiply/screen/max/min/subtract), opacity, speed, and
   masks by fixture or tag.
-- **Animation:** keyframes on any parameter (◆ in the inspector) with easing, and a
+- **Animation:** keyframes on any parameter (◆ in the inspector) with easing, LFO
+  modulators on numeric parameters (∿), and a
   multi-track **timeline** of clips with fades.
 - **Output:** DDP, E1.31 and Art-Net. Per-controller gamma, brightness, color order (incl.
   RGBW with white extraction), and a power limiter in amps. Packets are sent as complete
   frames.
-- **WLED:** read info, generate and push LED bus + realtime config, upload 2D ledmaps.
-  The bridge also discovers devices over mDNS.
+- **WLED:** scan the network (mDNS) and add devices in one click, read info, generate
+  and push LED bus + realtime config, upload 2D ledmaps.
 - **FSEQ v2 export** per controller for FPP/ESPixelStick/xLights-compatible players.
 - **Editing:** undo/redo for every edit (slider drags coalesce into one step), autosave,
   and project files as plain JSON validated by a schema.

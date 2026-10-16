@@ -121,3 +121,28 @@ export async function pickAndImportPoints(store: StudioStore): Promise<void> {
     for (const w of warnings) store.getState().notify("info", w);
   }
 }
+
+/** Add a controller for a discovered device (deduplicated by host). Returns its id. */
+export function addDiscoveredController(
+  store: StudioStore,
+  device: { name: string; host: string; kind: "wled" | "other" },
+): string {
+  const existing = store.getState().project.controllers.find((c) => c.host === device.host);
+  if (existing) {
+    store.getState().select({ kind: "controller", id: existing.id });
+    return existing.id;
+  }
+  const id = `ctl_${device.host.replace(/[^\w]/g, "_")}`;
+  store.getState().apply(
+    (p) =>
+      cmd.addController(p, {
+        id,
+        name: device.name || device.host,
+        host: device.host,
+        kind: device.kind === "wled" ? "wled" : "generic",
+      }),
+    `Add ${device.name}`,
+  );
+  store.getState().select({ kind: "controller", id });
+  return id;
+}

@@ -3,6 +3,7 @@ import { ledCount } from "@ledlay/core";
 import * as cmd from "@ledlay/editor";
 import { FIXTURE_TEMPLATES } from "@ledlay/editor";
 import { studio, useStudio } from "../state/store";
+import { DiscoverButton } from "./DiscoverButton";
 
 export function Outliner() {
   const project = useStudio((s) => s.project);
@@ -65,6 +66,7 @@ export function Outliner() {
       <section>
         <header>
           <h3>Controllers</h3>
+          <DiscoverButton />
           <button
             className="ghost add"
             onClick={() => {

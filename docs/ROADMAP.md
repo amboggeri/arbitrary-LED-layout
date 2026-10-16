@@ -21,7 +21,7 @@ Next steps:
 - [ ] Video/image mapping: project a video onto the layout from a camera viewpoint.
 - [ ] Audio-reactive parameters (FFT bands as modulation sources), plus a music track on
       the timeline with waveform display and an FSEQ `mf` header.
-- [ ] Parameter modulators (LFOs, random walk) as an alternative to keyframes.
+- [x] Parameter modulators: LFOs (sine/triangle/saw/square/random) as an alternative to keyframes.
 
 ## Phase 3: deployment ✅ (first pass)
 
@@ -30,7 +30,7 @@ Next steps:
 
 Next steps:
 
-- [ ] Discovery UI: scan the network, then add found WLED devices as controllers in one click.
+- [x] Discovery UI: scan the network, then add found WLED devices as controllers in one click.
 - [ ] Upload FSEQ to FPP / ESPixelStick over their HTTP APIs, and create playlists.
 - [ ] zstd-compressed FSEQ (smaller files on SD cards).
 - [ ] Multi-controller sync: ArtSync / E1.31 sync universes, and DDP timecode.
