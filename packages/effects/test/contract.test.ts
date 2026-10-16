@@ -1,13 +1,13 @@
 /** Every built-in effect must honour the same basic contract. */
 import { describe, expect, it } from "vitest";
-import { BUILTIN_EFFECTS, createPixelSpace } from "../src";
+import { BUILTIN_EFFECTS, createPixelSpace, type ParamSpecs } from "../src";
 import { gridSpace, lineSpace, renderOnce } from "./helpers";
 
 describe.each(BUILTIN_EFFECTS.map((e) => [e.id, e] as const))("%s", (_id, effect) => {
   it("has metadata and sane param specs", () => {
     expect(effect.name.length).toBeGreaterThan(0);
     expect(effect.description.length).toBeGreaterThan(0);
-    for (const [key, spec] of Object.entries(effect.params)) {
+    for (const [key, spec] of Object.entries(effect.params as ParamSpecs)) {
       expect(spec.label, key).toBeTruthy();
       if (spec.type === "number") {
         expect(spec.min).toBeLessThanOrEqual(spec.default);

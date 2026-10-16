@@ -14,6 +14,7 @@ import {
   solid,
   strobe,
   twinkle,
+  type ParamSpecs,
   type ScriptState,
 } from "../src";
 import { gridSpace, lineSpace, luma, px, renderOnce } from "./helpers";
@@ -44,7 +45,7 @@ describe("param resolution", () => {
     v: { type: "vec3", label: "v", default: [1, 2, 3] },
     g: { type: "gradient", label: "g", default: [{ pos: 0, color: "#000000" }] },
     k: { type: "code", label: "k", default: "return 1" },
-  } as const;
+  } satisfies ParamSpecs;
   it("clamps and falls back to defaults on bad input", () => {
     const r = resolveParams(specs, { n: 99, c: 5, b: "yes", s: "zzz", v: [1, 2], g: [], k: 3 });
     expect(r.n).toBe(2);
