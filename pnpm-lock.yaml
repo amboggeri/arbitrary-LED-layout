@@ -73,6 +73,9 @@ importers:
       '@ledlay/core':
         specifier: workspace:*
         version: link:../core
+      '@ledlay/effects':
+        specifier: workspace:*
+        version: link:../effects
       '@ledlay/engine':
         specifier: workspace:*
         version: link:../engine

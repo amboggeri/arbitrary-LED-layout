@@ -8,5 +8,5 @@
   "exports": {
     ".": "./src/index.ts"
   },
-  "dependencies": {"@ledlay/core": "workspace:*", "@ledlay/engine": "workspace:*", "@ledlay/protocols": "workspace:*"}
+  "dependencies": {"@ledlay/core": "workspace:*", "@ledlay/effects": "workspace:*", "@ledlay/engine": "workspace:*", "@ledlay/protocols": "workspace:*"}
 }
